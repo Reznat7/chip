@@ -27,53 +27,62 @@
         #quiz-container {
             background-color: var(--card);
             padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
             max-width: 600px;
             width: 100%;
             text-align: center;
+            border: 2px solid #333;
         }
 
         h1 { color: var(--primary); margin-bottom: 10px; }
         .progress { font-size: 0.9em; color: #888; margin-bottom: 20px; }
-        .question { font-size: 1.2em; margin-bottom: 25px; min-height: 60px; }
+        .question { font-size: 1.3em; margin-bottom: 30px; min-height: 60px; }
         .options { display: grid; gap: 15px; }
 
         button {
             background-color: #3d3d3d;
             color: white;
-            border: 2px solid transparent;
+            border: none;
             padding: 15px 20px;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             font-size: 1em;
             transition: 0.3s;
         }
 
-        button:hover { background-color: var(--primary); transform: translateY(-2px); }
+        button:hover { background-color: var(--primary); transform: scale(1.02); }
 
         #result { display: none; }
-        .diagnosis-title { color: var(--primary); font-size: 1.8em; margin-top: 15px; font-weight: bold; }
-        .description { font-style: italic; margin: 20px 0; line-height: 1.6; color: #ccc; }
+        .diagnosis-title { color: var(--primary); font-size: 2.2em; margin: 15px 0; font-weight: bold; }
+        .description { font-style: italic; margin-bottom: 30px; line-height: 1.6; color: #bbb; font-size: 1.1em; }
 
-        /* Анимированная надпись */
-        .animated-song-label {
+        /* Анимированная кнопка музыки */
+        .music-btn {
+            background-color: #222;
+            border: 2px solid;
+            padding: 20px;
+            font-size: 1.2em;
             font-weight: bold;
-            font-size: 1.1em;
-            display: block;
-            margin-top: 20px;
-            animation: rainbow 3s infinite;
+            border-radius: 50px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 20px;
+            animation: rainbow-border 3s infinite linear;
+            transition: transform 0.2s;
         }
 
-        @keyframes rainbow {
-            0% { color: #ff4d4d; }
-            25% { color: #f7d358; }
-            50% { color: #4dff88; }
-            75% { color: #4d94ff; }
-            100% { color: #ff4d4d; }
+        .music-btn:active { transform: scale(0.95); }
+
+        @keyframes rainbow-border {
+            0% { border-color: #ff4d4d; color: #ff4d4d; box-shadow: 0 0 10px #ff4d4d; }
+            33% { border-color: #4dff88; color: #4dff88; box-shadow: 0 0 10px #4dff88; }
+            66% { border-color: #4d94ff; color: #4d94ff; box-shadow: 0 0 10px #4d94ff; }
+            100% { border-color: #ff4d4d; color: #ff4d4d; box-shadow: 0 0 10px #ff4d4d; }
         }
 
-        .restart-btn { background: none; border: 1px solid var(--primary); color: var(--primary); margin-top: 25px; }
+        .restart-btn { background: none; border: 1px solid #555; color: #888; margin-top: 10px; font-size: 0.9em; }
+        .restart-btn:hover { background: #444; color: white; }
     </style>
 </head>
 <body>
@@ -91,8 +100,11 @@
         <div class="diagnosis-title" id="diag-title"></div>
         <div class="description" id="diag-desc"></div>
         
-        <span class="animated-song-label">Это песня к вашему диагнозу:</span>
-        <audio id="audio-player" preload="auto"></audio>
+        <button class="music-btn" id="musicToggle" onclick="toggleMusic()">
+            Эта песня подходит к вашему диагнозу
+        </button>
+
+        <audio id="audio-player"></audio>
 
         <button class="restart-btn" onclick="location.reload()">Пройти еще раз</button>
     </div>
@@ -100,7 +112,9 @@
 
 <script>
     const audio = document.getElementById('audio-player');
-    
+    const musicBtn = document.getElementById('musicToggle');
+    let isPlaying = false;
+
     const questions = [
         { q: "Как ты заходишь в чат Gadionovka 666?", a: ["С ноги и мемом", "Тихо читаю, что вы тут настрочили", "Сразу кидаю кружочек"] },
         { q: "Твое идеальное состояние в субботу вечером:", a: ["Горизонтальное", "Турбо-режим", "Не помню, было весело"] },
@@ -173,17 +187,24 @@
         document.getElementById('quiz-ui').style.display = 'none';
         document.getElementById('result').style.display = 'block';
         
-        // Расчет индекса для 30 вариантов
         let idx = Math.floor((totalScore / 20) * 29);
         const res = diagnoses[idx];
 
         document.getElementById('diag-title').innerText = res.t;
         document.getElementById('diag-desc').innerText = res.d;
-
-        // Настройка и запуск аудио (как в Чип и Дейл)
         audio.src = res.s;
         audio.volume = 0.5;
-        audio.play().catch(e => console.error("Ошибка музыки:", e));
+    }
+
+    function toggleMusic() {
+        if (isPlaying) {
+            audio.pause();
+            musicBtn.innerText = "Эта песня подходит к вашему диагнозу";
+        } else {
+            audio.play();
+            musicBtn.innerText = "Остановить музыку";
+        }
+        isPlaying = !isPlaying;
     }
 
     showQuestion();
