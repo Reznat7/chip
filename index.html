@@ -43,13 +43,16 @@
 
         h1.main-title { font-family: 'Creepster', cursive; color: #FFD700; width: 98%; text-align: center; font-size: 10vw; margin: 60px 0 20px; text-transform: uppercase; letter-spacing: 1vw; text-shadow: 4px 4px 0px #4b3b00; z-index: 2; }
 
-        /* --- КОНТЕЙНЕР КНОПОК --- */
-        .main-btns-container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; z-index: 100; margin-bottom: 20px; }
+        /* --- КНОПКИ ГЛАВНЫЕ (УВЕЛИЧЕНЫ) --- */
+        .main-btns-container { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; z-index: 100; margin-bottom: 30px; }
         .btn-base { cursor: pointer; transition: 0.3s; text-transform: uppercase; font-weight: 900; border: none; font-family: 'Orbitron', sans-serif; }
-        .btn-toggle { background-color: #000; color: #fff; font-size: 20px; padding: 10px 35px; border: 4px solid #00f2ff; box-shadow: 0 0 15px #00f2ff; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); width: auto; margin: 0 auto; display: block;}
-        .btn-test { background: var(--primary); color: white; font-size: 20px; padding: 15px 40px; border-radius: 50px; box-shadow: 0 0 20px var(--primary); animation: pulseBtn 1.5s infinite; }
-        .btn-chill { background: var(--chill); color: #000; font-size: 20px; padding: 15px 40px; border-radius: 50px; box-shadow: 0 0 20px var(--chill); display: flex; align-items: center; gap: 10px; }
-        .btn-chill span { display: inline-block; animation: carDrive 0.5s infinite linear; font-size: 1.5em; }
+        
+        .btn-toggle { background-color: #000; color: #fff; font-size: 24px; padding: 15px 45px; border: 4px solid #00f2ff; box-shadow: 0 0 15px #00f2ff; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); width: auto; margin: 0 auto; display: block;}
+        
+        .btn-test { background: var(--primary); color: white; font-size: 26px; padding: 25px 60px; border-radius: 60px; box-shadow: 0 0 25px var(--primary); animation: pulseBtn 1.5s infinite; }
+        
+        .btn-chill { background: var(--chill); color: #000; font-size: 26px; padding: 25px 60px; border-radius: 60px; box-shadow: 0 0 25px var(--chill); display: flex; align-items: center; gap: 15px; }
+        .btn-chill span { display: inline-block; animation: carDrive 0.5s infinite linear; font-size: 1.6em; }
 
         @keyframes carDrive { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
         @keyframes pulseBtn { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
@@ -73,23 +76,22 @@
         .close-test { background: #222; border: 5px solid var(--primary); color: var(--primary); cursor: pointer; font-size: 1.8em; margin: 40px auto 20px; padding: 20px 60px; border-radius: 50px; text-transform: uppercase; font-weight: 900; display: block; animation: pulseClose 2s infinite ease-in-out; }
         @keyframes pulseClose { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 30px var(--primary); } }
 
-        /* --- ЭКРАН ОТСЧЕТА (ОБНОВЛЕН) --- */
+        /* --- ЭКРАН ОТСЧЕТА (7 СЕКУНД + ТЕКСТ ВНИЗУ) --- */
         #chill-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98);
             z-index: 3000; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px;
         }
-        #chill-counter { font-size: 20vw; color: var(--chill); font-weight: 900; animation: pulseCountdown 1s infinite; text-shadow: 0 0 30px var(--chill); }
+        #chill-counter { font-size: 25vw; color: var(--chill); font-weight: 900; animation: pulseCountdown 1s infinite; text-shadow: 0 0 30px var(--chill); margin-bottom: 20px; }
         #chill-msg { 
-            font-size: 8vw; /* Сделал очень большим */
+            font-size: 6vw; 
             color: #fff; 
-            margin-top: 20px; 
-            display: none; 
-            text-transform: uppercase; /* БОЛЬШИМИ БУКВАМИ */
+            text-transform: uppercase; 
             font-weight: 900;
             line-height: 1.1;
-            text-shadow: 0 0 20px var(--primary);
+            text-shadow: 0 0 20px #000;
         }
-        @keyframes pulseCountdown { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        #chill-msg span { color: #ff0000; } /* Красный цвет для BEGIN */
+        @keyframes pulseCountdown { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
     </style>
 </head>
 <body>
@@ -108,8 +110,8 @@
     <button class="btn-base btn-toggle" onclick="toggleGarland()">ЖМЯК</button>
 
     <div id="chill-overlay">
-        <div id="chill-counter">10</div>
-        <div id="chill-msg">хочешь покататся нажми begin..</div>
+        <div id="chill-counter">7</div>
+        <div id="chill-msg">ХОЧЕШЬ ПОКАТАТЬСЯ НАЖМИ <span>BEGIN</span>..</div>
     </div>
 
     <div id="test-overlay">
@@ -146,18 +148,14 @@
             horrorSound.currentTime = 0; horrorSound.play().catch(()=>{});
         }
 
-        // ЛОГИКА ОТСЧЕТА (10 СЕКУНД)
+        // ЛОГИКА ОТСЧЕТА (7 СЕКУНД)
         function startChill() {
             clickSound.play();
             const overlay = document.getElementById('chill-overlay');
             const counter = document.getElementById('chill-counter');
-            const msg = document.getElementById('chill-msg');
-            
             overlay.style.display = 'flex';
-            counter.style.display = 'block';
-            msg.style.display = 'none';
             
-            let timeLeft = 10; // Установил 10 секунд
+            let timeLeft = 7; 
             counter.textContent = timeLeft;
 
             const timer = setInterval(() => {
@@ -165,11 +163,7 @@
                 counter.textContent = timeLeft;
                 if (timeLeft <= 0) {
                     clearInterval(timer);
-                    counter.style.display = 'none';
-                    msg.style.display = 'block';
-                    setTimeout(() => {
-                        window.location.href = "https://slowroads.io/";
-                    }, 2500); // Небольшая задержка, чтобы успеть прочитать надпись
+                    window.location.href = "https://slowroads.io/";
                 }
             }, 1000);
         }
@@ -225,7 +219,13 @@
                 const b = document.createElement('button');
                 b.className = 'opt-btn';
                 b.innerText = ans;
-                b.onclick = () => { clickSound.currentTime = 0; clickSound.play().catch(e => {}); totalScore += i; currentStep++; startQuiz(); };
+                b.onclick = () => { 
+                    clickSound.currentTime = 0;
+                    clickSound.play().catch(e => {}); 
+                    totalScore += i; 
+                    currentStep++; 
+                    startQuiz(); 
+                };
                 oCont.appendChild(b);
             });
         }
