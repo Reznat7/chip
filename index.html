@@ -45,79 +45,65 @@
         /* --- КНОПКИ --- */
         .btn-base { cursor: pointer; transition: 0.3s; text-transform: uppercase; font-weight: 900; border: none; z-index: 100; margin: 10px; }
         
-        .btn-toggle { background-color: #000; color: #fff; font-size: 20px; padding: 15px 35px; border: 4px solid #00f2ff; box-shadow: 0 0 15px #00f2ff; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); }
+        .btn-toggle { background-color: #000; color: #fff; font-size: 20px; padding: 10px 35px; border: 4px solid #00f2ff; box-shadow: 0 0 15px #00f2ff; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); }
 
-        /* АНИМИРОВАННАЯ КНОПКА ТЕСТ */
         .btn-test { 
-            background: var(--primary); color: white; font-size: 28px; padding: 20px 60px; border-radius: 50px; 
+            background: var(--primary); color: white; font-size: 24px; padding: 15px 50px; border-radius: 50px; 
             box-shadow: 0 0 20px var(--primary); animation: pulseBtn 1.5s infinite; 
         }
         @keyframes pulseBtn {
             0% { transform: scale(1); box-shadow: 0 0 20px var(--primary); }
-            50% { transform: scale(1.05); box-shadow: 0 0 40px var(--primary); }
+            50% { transform: scale(1.05); box-shadow: 0 0 35px var(--primary); }
             100% { transform: scale(1); box-shadow: 0 0 20px var(--primary); }
         }
 
-        /* --- КОНТЕЙНЕР ТЕСТА (НИЖНЯЯ ПОЛОВИНА) --- */
+        /* --- КОНТЕЙНЕР ТЕСТА (НИЖНЯЯ ПОЛОВИНА ЭКРАНА) --- */
         #test-overlay {
-            display: none; /* Скрыт по умолчанию */
-            position: fixed; /* Фиксированная позиция */
+            display: none; 
+            position: fixed; 
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 50vh; /* Ровно нижняя половина экрана */
+            height: 50vh; /* Ровно нижняя половина */
             z-index: 2000;
             justify-content: center;
-            align-items: flex-end; /* Прижимаем к низу */
-            padding-bottom: 10px; /* Небольшой отступ от самого низа */
+            align-items: flex-end; 
         }
 
         #quiz-container {
-            background-color: var(--card); padding: 25px; border-radius: 20px 20px 0 0; /* Закругляем только верх */
-            box-shadow: 0 -5px 30px rgba(0,0,0,0.8); 
-            width: 95%; max-width: 600px; /* Немного шире */
+            background-color: var(--card); padding: 20px; border-radius: 20px 20px 0 0; 
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.9); width: 100%; height: 100%;
             text-align: center; position: relative; border: 2px solid #444; border-bottom: none; color: white;
-            overflow-y: auto; /* Прокрутка внутри */
-            max-height: 100%; /* На всю высоту оверлея (50vh) */
+            overflow-y: auto; box-sizing: border-box;
         }
 
-        /* Убрал .ver-indicator */
-        
-        .question { font-size: 1.3em; margin-bottom: 25px; min-height: 60px; color: var(--primary); font-weight: bold; }
-        .options { display: grid; gap: 12px; }
-        button.opt-btn { background-color: #3d3d3d; color: white; border: 2px solid transparent; padding: 16px; border-radius: 12px; cursor: pointer; font-size: 1.05em; transition: 0.2s; }
+        .question { font-size: 1.2em; margin-bottom: 20px; min-height: 50px; color: var(--primary); font-weight: bold; }
+        .options { display: grid; gap: 10px; }
+        button.opt-btn { background-color: #3d3d3d; color: white; border: 2px solid transparent; padding: 14px; border-radius: 10px; cursor: pointer; font-size: 1em; transition: 0.2s; }
         button.opt-btn:hover { background-color: #444; border-color: var(--primary); }
-        #result { display: none; padding-bottom: 20px; }
-        .diagnosis-title { color: var(--primary); font-size: 2em; margin-top: 15px; font-weight: bold; }
-        .description { font-style: italic; margin: 15px 0; line-height: 1.6; color: #ddd; }
-        .reveal-btn { background-color: var(--primary); color: white; border: none; padding: 20px; font-size: 1.1em; font-weight: bold; border-radius: 50px; cursor: pointer; width: 100%; margin: 20px 0; }
-        #emoji-portrait { display: none; font-size: 100px; background: #333; border-radius: 50%; width: 150px; height: 150px; line-height: 150px; margin: 20px auto; border: 4px solid var(--primary); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
-        .share-btn { background-color: #28a745; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; margin-top: 10px; cursor: pointer; font-weight: bold; }
         
+        #result { display: none; padding-bottom: 20px; }
+        .diagnosis-title { color: var(--primary); font-size: 1.8em; margin-top: 10px; font-weight: bold; }
+        .description { font-style: italic; margin: 10px 0; line-height: 1.5; color: #ddd; font-size: 0.95em; }
+        
+        .reveal-btn { background-color: var(--primary); color: white; border: none; padding: 15px; font-size: 1em; font-weight: bold; border-radius: 50px; cursor: pointer; width: 100%; margin: 15px 0; }
+        
+        #emoji-portrait { display: none; font-size: 80px; background: #333; border-radius: 50%; width: 120px; height: 120px; line-height: 120px; margin: 15px auto; border: 4px solid var(--primary); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+        
+        .share-btn { background-color: #28a745; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; cursor: pointer; font-weight: bold; }
+
         /* АНИМИРОВАННАЯ КНОПКА ЗАКРЫТИЯ */
         .close-test { 
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            cursor: pointer;
-            font-size: 18px;
-            font-weight: bold;
-            margin-top: 20px;
-            padding: 10px 30px;
-            border-radius: 30px;
-            text-transform: uppercase;
-            animation: pulseClose 2s infinite;
-            transition: transform 0.2s;
-        }
-        .close-test:hover {
-             transform: scale(1.05);
-             background: rgba(255, 77, 77, 0.1);
+            background: #444; border: 2px solid var(--primary); color: white; 
+            cursor: pointer; font-size: 14px; margin-top: 15px; padding: 8px 25px; 
+            border-radius: 20px; text-transform: uppercase; font-weight: bold;
+            animation: pulseClose 2s infinite ease-in-out;
         }
         @keyframes pulseClose {
-            0% { box-shadow: 0 0 5px var(--primary); }
-            50% { box-shadow: 0 0 15px var(--primary); }
-            100% { box-shadow: 0 0 5px var(--primary); }
+            0% { box-shadow: 0 0 0px var(--primary); transform: scale(1); }
+            50% { box-shadow: 0 0 15px var(--primary); transform: scale(1.05); }
+            100% { box-shadow: 0 0 0px var(--primary); transform: scale(1); }
         }
     </style>
 </head>
@@ -135,34 +121,29 @@
     <div id="test-overlay">
         <div id="quiz-container">
             <div id="quiz-ui">
-                <h1 style="color: var(--primary); margin-top: 0;">Gadionovka 666</h1>
-                <div class="progress" id="progress" style="color: #888; margin-bottom: 20px;">Вопрос 1 из 10</div>
+                <h2 style="color: var(--primary); margin: 5px 0;">Gadionovka 666</h2>
+                <div class="progress" id="progress" style="color: #888; font-size: 0.85em; margin-bottom: 15px;">Вопрос 1 из 10</div>
                 <div class="question" id="qText">Загрузка...</div>
                 <div class="options" id="oCont"></div>
             </div>
 
             <div id="result">
-                <h1 style="color: var(--primary); margin-top: 0;">ВАШ ДИАГНОЗ ЭТО...</h1>
+                <h2 style="color: var(--primary); margin: 5px 0;">ВАШ ДИАГНОЗ ЭТО...</h2>
                 <div class="diagnosis-title" id="diag-title"></div>
                 <div class="description" id="diag-desc"></div>
                 
-                <button class="reveal-btn" id="revBtn" onclick="showPortrait()">
-                    Этот персонаж похож на вас
-                </button>
-
+                <button class="reveal-btn" id="revBtn" onclick="showPortrait()">Этот персонаж похож на вас</button>
                 <div id="emoji-portrait"></div>
 
-                <button class="share-btn" onclick="copyResult()">Скопировать для чата 666</button>
+                <button class="share-btn" onclick="copyResult()">Скопировать результат</button>
                 <button class="opt-btn" style="width:100%; margin-top:10px;" onclick="location.reload()">Пройти еще раз</button>
                 
-                <br>
-                <button class="close-test" onclick="closeQuiz()">✖ Закрыть тест</button>
+                <button class="close-test" onclick="closeQuiz()">Закрыть тест</button>
             </div>
         </div>
     </div>
 
     <script>
-        // ЛОГИКА ГИРЛЯНД
         const horrorSound = new Audio('https://www.myinstants.com/media/sounds/horror-ghost-sound-effect.mp3');
         function toggleGarland() { 
             const nodes = document.querySelectorAll('.garland-node');
@@ -170,7 +151,6 @@
             horrorSound.currentTime = 0; horrorSound.play().catch(()=>{});
         }
 
-        // ЛОГИКА ТЕСТА
         function openQuiz() {
             document.getElementById('test-overlay').style.display = 'flex';
             startQuiz();
@@ -199,51 +179,23 @@
         ];
 
         const diagnoses = [
-            { t: "Хронический Хохотун", d: "Вы смеетесь даже над несмешными шутками. Ваша аура исцеляет.", e: "😂" },
+            { t: "Хронический Хохотун", d: "Вы смеетесь даже над несмешными шутками.", e: "😂" },
             { t: "Магистр Диванных Наук", d: "Вы достигли просветления, не вставая с кровати.", e: "🛋️" },
             { t: "Меметический Барон", d: "Ваш мозг на 80% состоит из картинок с котами.", e: "😼" },
             { t: "Профессиональный Душнила", d: "Вы знаете, как правильно, и любите это объяснять.", e: "😤" },
-            { t: "Энергетический Вампир-Вегетарианец", d: "Вы питаетесь только позитивной энергией друзей.", e: "🥦" },
+            { t: "Энергетический Вампир", d: "Вы питаетесь только позитивной энергией друзей.", e: "🥦" },
             { t: "Ниндзя Гадионовки", d: "Вы всё видите, всё знаете, но молчите в чате.", e: "🥷" },
             { t: "Король Рандома", d: "Никто не знает, что вы скажете в следующую секунду.", e: "🎲" },
             { t: "Сверхзвуковой Лентяй", d: "Вы умудряетесь ничего не делать очень быстро.", e: "🦥" },
-            { t: "Амбассадор Чая и Печенек", d: "Любая проблема решается для вас перекусом.", e: "🍪" },
-            { t: "Генератор Кринжа", d: "Ваши шутки настолько плохи, что они гениальны.", e: "🤡" },
-            { t: "Цифровой Философ", d: "Вы ищете смысл жизни в уведомлениях телефона.", e: "📱" },
-            { t: "Верховный Хранитель Секретов", d: "Вам можно доверить всё. Вы надежны как сейф.", e: "🤐" },
-            { t: "Повелитель Дедлайнов", d: "Вы живете на грани. Адреналин — ваш завтрак.", e: "🧨" },
-            { t: "Легенда Ночного Жора", d: "Холодильник — ваш лучший друг после полуночи.", e: "🍗" },
-            { t: "Мистер Позитив", d: "Вы настолько оптимистичны, что это подозрительно.", e: "☀️" },
-            { t: "Маг Социальных Сетей", d: "Вы знаете о друзьях больше, чем они сами.", e: "🤳" },
-            { t: "Космический Путешественник", d: "Часто витаете в облаках. Там красиво.", e: "👨‍🚀" },
-            { t: "Главный По Тарелочкам", d: "Вы всегда знаете, где самая вкусная еда.", e: "🍝" },
-            { t: "Интроверт-Экстремал", d: "Вы любите людей, но на расстоянии 5 км.", e: "🏚️" },
-            { t: "Техно-Шаман", d: "У вас всё работает силой мысли (иногда).", e: "🛠️" },
-            { t: "Мистический Соня", d: "Ваши сны интереснее, чем реальность.", e: "😴" },
-            { t: "Мастер Переобувания", d: "Гений дипломатии и смены мнений.", e: "👟" },
-            { t: "Охотник за Акциями", d: "Вы знаете, где скидки и бесплатная пицца.", e: "💰" },
-            { t: "Душа Гадионовки", d: "Без вас этот чат был бы просто буквами.", e: "❤️" },
-            { t: "Скрытый Миллионер", d: "Вы выглядите скромно, но в душе — золото.", e: "💎" },
-            { t: "Пророк Переписок", d: "Вы печатаете ответ еще до вопроса.", e: "🔮" },
-            { t: "Детектив Мемов", d: "Можете найти оригинал любого видео за миг.", e: "🕵️" },
-            { t: "Ультра-Миротворец", d: "Разруливаете конфликты одной фразой.", e: "🕊️" },
-            { t: "Вечный Студент", d: "Вы каждый день узнаете новое и тут же забываете.", e: "🎓" },
-            { t: "Анархист-Одуванчик", d: "Выглядите мило, но готовы захватить мир.", e: "😈" }
+            { t: "Амбассадор Печенек", d: "Любая проблема решается для вас перекусом.", e: "🍪" },
+            { t: "Генератор Кринжа", d: "Ваши шутки настолько плохи, что они гениальны.", e: "🤡" }
         ];
 
         function startQuiz() {
-            const qText = document.getElementById('qText');
-            const oCont = document.getElementById('oCont');
-            const prog = document.getElementById('progress');
-
             if (currentStep >= 10) {
                 document.getElementById('quiz-ui').style.display = 'none';
                 document.getElementById('result').style.display = 'block';
-                // Прокрутка вниз к результату и кнопке закрытия
-                document.getElementById('quiz-container').scrollTop = document.getElementById('quiz-container').scrollHeight;
-                
-                let idx = Math.floor((totalScore / 20) * 29);
-                if (idx > 29) idx = 29;
+                let idx = Math.min(Math.floor((totalScore / 20) * 9), 9);
                 const res = diagnoses[idx];
                 document.getElementById('diag-title').innerText = res.t;
                 document.getElementById('diag-desc').innerText = res.d;
@@ -251,12 +203,11 @@
                 finalTitle = res.t;
                 return;
             }
-
             const q = questions[currentStep];
-            prog.innerText = "Вопрос " + (currentStep + 1) + " из 10";
-            qText.innerText = q.q;
+            document.getElementById('progress').innerText = "Вопрос " + (currentStep + 1) + " из 10";
+            document.getElementById('qText').innerText = q.q;
+            const oCont = document.getElementById('oCont');
             oCont.innerHTML = '';
-            
             q.a.forEach((ans, i) => {
                 const b = document.createElement('button');
                 b.className = 'opt-btn';
@@ -271,15 +222,11 @@
             const port = document.getElementById('emoji-portrait');
             port.innerText = finalEmoji;
             port.style.display = 'block';
-             // Прокрутка вниз к эмодзи
-            document.getElementById('quiz-container').scrollTop = document.getElementById('quiz-container').scrollHeight;
         }
 
         function copyResult() {
-            const text = "Мой диагноз в Gadionovka 666: " + finalTitle + " " + finalEmoji + "\nУзнай свой тут: " + window.location.href;
-            navigator.clipboard.writeText(text).then(() => {
-                alert("Результат скопирован! Вставляй в чат друзей.");
-            });
+            const text = "Мой диагноз в Gadionovka 666: " + finalTitle + " " + finalEmoji;
+            navigator.clipboard.writeText(text).then(() => alert("Скопировано!"));
         }
     </script>
 </body>
