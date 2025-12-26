@@ -12,6 +12,7 @@
             --text: #ffffff;
         }
 
+        /* Индикатор версии 7 */
         .ver-indicator {
             position: absolute;
             top: 10px;
@@ -19,7 +20,8 @@
             transform: translateX(-50%);
             color: var(--primary);
             font-weight: bold;
-            font-size: 1.2em;
+            font-size: 1.4em;
+            z-index: 10;
         }
 
         body {
@@ -38,7 +40,7 @@
             background-color: var(--card);
             padding: 30px;
             border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
             max-width: 600px;
             width: 100%;
             text-align: center;
@@ -49,14 +51,12 @@
         h1 { color: var(--primary); margin-bottom: 10px; }
         .progress { font-size: 0.9em; color: #888; margin-bottom: 20px; }
         
-        /* ВОПРОСЫ КРАСНОГО ЦВЕТА */
         .question { 
             font-size: 1.25em; 
             margin-bottom: 25px; 
             min-height: 60px; 
             color: var(--primary); 
             font-weight: bold;
-            line-height: 1.4;
         }
 
         .options { display: grid; gap: 12px; }
@@ -68,53 +68,51 @@
             padding: 16px;
             border-radius: 12px;
             cursor: pointer;
-            font-size: 1em;
-            transition: 0.3s;
+            font-size: 1.05em;
+            transition: 0.2s;
         }
 
         button.opt-btn:hover { background-color: #444; border-color: var(--primary); }
 
         #result { display: none; }
-        .diagnosis-title { color: var(--primary); font-size: 2em; margin-top: 15px; font-weight: bold; }
+        .diagnosis-title { color: var(--primary); font-size: 2.1em; margin-top: 15px; font-weight: bold; }
         .description { font-style: italic; margin: 20px 0; line-height: 1.6; color: #ddd; font-size: 1.1em; }
         
-        /* АНИМИРОВАННАЯ КНОПКА МУЗЫКИ */
         .music-btn {
             background-color: #222;
             border: 4px solid;
             padding: 22px;
-            font-size: 1.1em;
+            font-size: 1.15em;
             font-weight: bold;
             border-radius: 60px;
             cursor: pointer;
             width: 100%;
             margin: 25px 0;
-            outline: none;
             animation: rainbow-anim 3s infinite linear;
             display: block;
+            color: white;
         }
 
         @keyframes rainbow-anim {
-            0% { border-color: #ff4d4d; color: #ff4d4d; box-shadow: 0 0 15px #ff4d4d; }
-            33% { border-color: #4dff88; color: #4dff88; box-shadow: 0 0 15px #4dff88; }
-            66% { border-color: #4d94ff; color: #4d94ff; box-shadow: 0 0 15px #4d94ff; }
-            100% { border-color: #ff4d4d; color: #ff4d4d; box-shadow: 0 0 15px #ff4d4d; }
+            0% { border-color: #ff4d4d; box-shadow: 0 0 15px #ff4d4d; }
+            33% { border-color: #4dff88; box-shadow: 0 0 15px #4dff88; }
+            66% { border-color: #4d94ff; box-shadow: 0 0 15px #4d94ff; }
+            100% { border-color: #ff4d4d; box-shadow: 0 0 15px #ff4d4d; }
         }
 
         .restart-btn { background: none; border: 1px solid #666; color: #888; margin-top: 10px; padding: 12px; border-radius: 12px; cursor: pointer; width: 100%; }
-        .restart-btn:hover { color: white; border-color: white; }
     </style>
 </head>
 <body>
 
 <div id="quiz-container">
-    <div class="ver-indicator">6</div>
+    <div class="ver-indicator">7</div>
     
     <div id="quiz-ui">
         <h1>Gadionovka 666</h1>
-        <div class="progress" id="progress">Загрузка...</div>
-        <div class="question" id="question-text">Пожалуйста, подождите...</div>
-        <div class="options" id="options-container"></div>
+        <div class="progress" id="progress">Вопрос 1 из 10</div>
+        <div class="question" id="qText">Загрузка...</div>
+        <div class="options" id="oCont"></div>
     </div>
 
     <div id="result">
@@ -139,19 +137,19 @@
     let currentStep = 0;
     let totalScore = 0;
     let isPlaying = false;
-    let songUrl = "";
+    let finalUrl = "";
 
     const questions = [
-        { q: "Как ты заходишь в чат Gadionovka 666?", a: ["С ноги и мемом", "Тихо читаю, что вы тут настрочили", "Сразу кидаю кружочек"] },
-        { q: "Твое идеальное состояние в субботу вечером:", a: ["Горизонтальное", "Турбо-режим", "Не помню, было весело"] },
-        { q: "Что ты сделаешь, если увидишь привидение?", a: ["Предложу вступить в чат", "Спрошу про подписку на Плюс", "Убегу, роняя тапки"] },
-        { q: "Твой главный талант — это...", a: ["Сон 12 часов подряд", "Генерация странных идей", "Умение вовремя промолчать"] },
-        { q: "Любимая еда для посиделок?", a: ["Что-то острое, как шутки админа", "Пицца — классика", "Энергетик и надежда"] },
-        { q: "Твой уровень стресса сейчас:", a: ["Спокоен как капибара", "Нервный тик левого глаза", "Я и есть стресс"] },
-        { q: "Если бы ты был животным, то каким?", a: ["Ленивцем-интеллектуалом", "Енотом-полоскуном", "Кот-арбуз"] },
-        { q: "Твое отношение к дедлайнам:", a: ["Дедлайн? Не, не слышал", "Бегу за ними", "Побеждаю в последнюю секунду"] },
-        { q: "Что ты выберешь?", a: ["Миллион долларов", "Способность летать", "Чтобы в чате всегда был актив"] },
-        { q: "Твой девиз по жизни:", a: ["Главное — не участие, а обед", "Слабоумие и отвага!", "Нормально делай — нормально будет"] }
+        { q: "Как ты заходишь в чат Gadionovka 666?", a: ["С ноги и мемом", "Тихо читаю", "Сразу кружочек"] },
+        { q: "Твое идеальное состояние в субботу вечером:", a: ["Горизонтальное", "Турбо-режим", "Не помню"] },
+        { q: "Что ты сделаешь, если увидишь привидение?", a: ["Предложу вступить", "Спрошу про Плюс", "Убегу"] },
+        { q: "Твой главный талант — это...", a: ["Сон 12 часов", "Странные идеи", "Промолчать"] },
+        { q: "Любимая еда для посиделок?", a: ["Острое", "Пицца", "Энергетик"] },
+        { q: "Твой уровень стресса сейчас:", a: ["Капибара", "Нервный тик", "Я и есть стресс"] },
+        { q: "Если бы ты был животным, то каким?", a: ["Ленивец", "Енот", "Кот-арбуз"] },
+        { q: "Твое отношение к дедлайнам:", a: ["Не слышал", "Бегу", "Побеждаю"] },
+        { q: "Что ты выберешь?", a: ["Миллион $", "Летать", "Актив в чате"] },
+        { q: "Твой девиз по жизни:", a: ["Главное — обед", "Отвага!", "Нормально будет"] }
     ];
 
     const diagnoses = [
@@ -160,37 +158,42 @@
         { t: "Меметический Барон", d: "Ваш мозг на 80% состоит из картинок с котами.", s: "https://ia801004.us.archive.org/32/items/friend-like-me/Friend%20Like%20Me.mp3" },
         { t: "Профессиональный Душнила (Любя)", d: "Вы знаете, как правильно, и не боитесь об этом сказать.", s: "https://ia601005.us.archive.org/20/items/be-our-guest/Be%20Our%20Guest.mp3" },
         { t: "Энергетический Вампир-Вегетарианец", d: "Вы питаетесь только позитивной энергией.", s: "https://ia801004.us.archive.org/21/items/under-the-sea_202103/Under%20the%20Sea.mp3" },
-        { t: "Ниндзя Гадионовки", d: "Вы всё видите, всё знаете, но молчите. Появляетесь внезапно.", s: "https://ia801007.us.archive.org/28/items/ill-make-a-man-out-of-you/I%27ll%20Make%20a%20Man%20Out%20of%20You.mp3" },
+        { t: "Ниндзя Гадионовки", d: "Вы всё видите, всё знаете, но молчите.", s: "https://ia801007.us.archive.org/28/items/ill-make-a-man-out-of-you/I%27ll%20Make%20a%20Man%20Out%20of%20You.mp3" },
         { t: "Король Рандома", d: "Никто не знает, что вы скажете в следующую секунду.", s: "https://ia601006.us.archive.org/21/items/alice-in-wonderland-unbirthday/Unbirthday.mp3" },
-        { t: "Сверхзвуковой Лентяй", d: "Вы умудряетесь ничего не делать с невероятной скоростью.", s: "https://ia803403.us.archive.org/21/items/heigh-ho/Heigh-Ho.mp3" },
-        { t: "Амбассадор Чая и Печенек", d: "Любая проблема решается для вас перекусом.", s: "https://ia801005.us.archive.org/22/items/beauty-and-the-beast_202104/Beauty%20and%20the%20Beast.mp3" },
-        { t: "Генератор Кринжа (Высший уровень)", d: "Ваши шутки настолько плохи, что они гениальны.", s: "https://ia803403.us.archive.org/22/items/zero-to-hero/Zero%20to%20Hero.mp3" },
+        { t: "Сверхзвуковой Лентяй", d: "Вы умудряетесь ничего не делать быстро.", s: "https://ia803403.us.archive.org/21/items/heigh-ho/Heigh-Ho.mp3" },
+        { t: "Амбассадор Чая и Печенек", d: "Любая проблема решается перекусом.", s: "https://ia801005.us.archive.org/22/items/beauty-and-the-beast_202104/Beauty%20and%20the%20Beast.mp3" },
+        { t: "Генератор Кринжа", d: "Ваши шутки настолько плохи, что они гениальны.", s: "https://ia803403.us.archive.org/22/items/zero-to-hero/Zero%20to%20Hero.mp3" },
         { t: "Цифровой Философ", d: "Вы ищете смысл жизни в уведомлениях.", s: "https://ia801006.us.archive.org/32/items/circle-of-life/Circle%20of%20Life.mp3" },
         { t: "Верховный Хранитель Секретов", d: "Вам можно доверить всё. Вы надежны.", s: "https://ia803402.us.archive.org/23/items/can-you-feel-the-love-tonight/Can%20You%20Feel%20The%20Love%20Tonight.mp3" },
         { t: "Повелитель Дедлайнов", d: "Адреналин — ваш главный завтрак.", s: "https://ia803402.us.archive.org/23/items/go-the-distance/Go%20the%20Distance.mp3" },
-        { t: "Легенда Ночного Жора", d: "Холодильник — ваш лучший друг после полуночи.", s: "https://ia601005.us.archive.org/20/items/be-our-guest/Be%20Our%20Guest.mp3" },
-        { t: "Мистер Позитив", d: "Вы настолько оптимистичны, что это подозрительно.", s: "https://ia803405.us.archive.org/34/items/youve-got-a-friend-in-me/You%27ve%20Got%20a%20Friend%20in%20Me.mp3" },
+        { t: "Легенда Ночного Жора", d: "Холодильник — ваш лучший друг.", s: "https://ia601005.us.archive.org/20/items/be-our-guest/Be%20Our%20Guest.mp3" },
+        { t: "Мистер Позитив", d: "Вы подозрительно оптимистичны.", s: "https://ia803405.us.archive.org/34/items/youve-got-a-friend-in-me/You%27ve%20Got%20a%20Friend%20in%20Me.mp3" },
         { t: "Маг Социальных Сетей", d: "Ваш телефон — продолжение вашей руки.", s: "https://ia801006.us.archive.org/22/items/a-whole-new-world/A%20Whole%20New%20World.mp3" },
         { t: "Космический Путешественник", d: "Часто витаете в облаках. Там красиво.", s: "https://ia801006.us.archive.org/32/items/circle-of-life/Circle%20of%20Life.mp3" },
         { t: "Главный По Тарелочкам", d: "Вы всегда знаете, где самая вкусная еда.", s: "https://ia800702.us.archive.org/1/items/the-bare-necessities/The%20Bare%20Necessities.mp3" },
-        { t: "Интроверт-Экстремал", d: "Вы любите людей, но на большом расстоянии.", s: "https://ia601006.us.archive.org/1/items/let-it-go_202104/Let%20It%20Go.mp3" },
+        { t: "Интроверт-Экстремал", d: "Вы любите людей на расстоянии.", s: "https://ia601006.us.archive.org/1/items/let-it-go_202104/Let%20It%20Go.mp3" },
         { t: "Техно-Шаман", d: "Вы умеете договариваться с техникой.", s: "https://ia801007.us.archive.org/28/items/ill-make-a-man-out-of-you/I%27ll%20Make%20a%20Man%20Out%20of%20You.mp3" },
-        { t: "Мистический Соня", d: "Ваши сны интереснее, чем большинство фильмов.", s: "https://ia601006.us.archive.org/21/items/alice-in-wonderland-unbirthday/Unbirthday.mp3" },
-        { t: "Мастер Переобувания", d: "Меняете мнение за секунду, но всегда аргументированно.", s: "https://ia803402.us.archive.org/23/items/go-the-distance/Go%20the%20Distance.mp3" },
+        { t: "Мистический Соня", d: "Ваши сны интереснее, чем фильмы.", s: "https://ia601006.us.archive.org/21/items/alice-in-wonderland-unbirthday/Unbirthday.mp3" },
+        { t: "Мастер Переобувания", d: "Меняете мнение за секунду, но аргументированно.", s: "https://ia803402.us.archive.org/23/items/go-the-distance/Go%20the%20Distance.mp3" },
         { t: "Охотник за Акциями", d: "Вы знаете, где скидки и бесплатная еда.", s: "https://ia803403.us.archive.org/21/items/heigh-ho/Heigh-Ho.mp3" },
-        { t: "Душа Гадионовки", d: "Без вас этот чат был бы просто набором букв.", s: "https://ia801309.us.archive.org/28/items/lion-king-hakuna-matata/Lion%20King%20-%20Hakuna%20Matata.mp3" },
-        { t: "Скрытый Миллионер", d: "Вы выглядите скромно, но в душе у вас золотые горы.", s: "https://ia803403.us.archive.org/22/items/zero-to-hero/Zero%20to%20Hero.mp3" },
+        { t: "Душа Гадионовки", d: "Без вас этот чат был бы просто буквами.", s: "https://ia801309.us.archive.org/28/items/lion-king-hakuna-matata/Lion%20King%20-%20Hakuna%20Matata.mp3" },
+        { t: "Скрытый Миллионер", d: "Вы выглядите скромно, но в душе золото.", s: "https://ia803403.us.archive.org/22/items/zero-to-hero/Zero%20to%20Hero.mp3" },
         { t: "Пророк Переписок", d: "Вы печатаете ответ еще до вопроса.", s: "https://ia801004.us.archive.org/32/items/friend-like-me/Friend%20Like%20Me.mp3" },
-        { t: "Детектив Мемов", d: "Можете найти оригинал любого видео за 2 секунды.", s: "https://archive.org/download/TVThemeSongsTVThemesChipnDaleRescueRangers/TV%20THEMES%20-%20Disney%27s%20-%20Chip%20%27n%20Dale%27s%20Rescue%20Rangers%20%2880%27s%20Cartoon%29%20%7BSHORT%20EDIT%20FOR%20TV%7D.mp3" },
+        { t: "Детектив Мемов", d: "Можете найти оригинал любого видео за миг.", s: "https://archive.org/download/TVThemeSongsTVThemesChipnDaleRescueRangers/TV%20THEMES%20-%20Disney%27s%20-%20Chip%20%27n%20Dale%27s%20Rescue%20Rangers%20%2880%27s%20Cartoon%29%20%7BSHORT%20EDIT%20FOR%20TV%7D.mp3" },
         { t: "Ультра-Миротворец", d: "Разруливаете любые конфликты одной фразой.", s: "https://ia801005.us.archive.org/22/items/beauty-and-the-beast_202104/Beauty%20and%20the%20Beast.mp3" },
         { t: "Вечный Студент", d: "Вы каждый день узнаете новое (и забываете).", s: "https://ia801004.us.archive.org/21/items/under-the-sea_202103/Under%20the%20Sea.mp3" },
         { t: "Анархист-Одуванчик", d: "Выглядите мило, но готовы захватить мир.", s: "https://archive.org/download/TVThemeSongsTVThemesChipnDaleRescueRangers/TV%20THEMES%20-%20Disney%27s%20-%20Chip%20%27n%20Dale%27s%20Rescue%20Rangers%20%2880%27s%20Cartoon%29%20%7BSHORT%20EDIT%20FOR%20TV%7D.mp3" }
     ];
 
-    function showQuestion() {
-        const qText = document.getElementById('question-text');
-        const oCont = document.getElementById('options-container');
+    function startQuiz() {
+        const qText = document.getElementById('qText');
+        const oCont = document.getElementById('oCont');
         const prog = document.getElementById('progress');
+
+        if (currentStep >= 10) {
+            showResult();
+            return;
+        }
 
         const q = questions[currentStep];
         prog.innerText = "Вопрос " + (currentStep + 1) + " из 10";
@@ -201,15 +204,7 @@
             const b = document.createElement('button');
             b.className = 'opt-btn';
             b.innerText = ans;
-            b.onclick = function() {
-                totalScore += i;
-                currentStep++;
-                if (currentStep < 10) { 
-                    showQuestion(); 
-                } else { 
-                    showResult(); 
-                }
-            };
+            b.onclick = () => { totalScore += i; currentStep++; startQuiz(); };
             oCont.appendChild(b);
         });
     }
@@ -225,8 +220,9 @@
         document.getElementById('diag-title').innerText = res.t;
         document.getElementById('diag-desc').innerText = res.d;
         
-        // Запоминаем ссылку
-        songUrl = res.s;
+        finalUrl = res.s;
+        audio.src = finalUrl;
+        audio.load();
     }
 
     function toggleMusic() {
@@ -236,22 +232,17 @@
             musicBtn.innerText = "Эта песня подходит к вашему диагнозу";
             isPlaying = false;
         } else {
-            // Подгружаем и играем
-            audio.src = songUrl;
-            audio.volume = 0.5;
             audio.play().then(() => {
                 musicBtn.innerText = "Остановить музыку";
                 isPlaying = true;
-            }).catch(error => {
-                console.error("Ошибка музыки:", error);
-                musicBtn.innerText = "Ошибка загрузки звука 😢";
+            }).catch(e => {
+                musicBtn.innerText = "Ошибка: нажмите еще раз 😢";
+                isPlaying = false;
             });
         }
     }
 
-    // Запуск теста
-    window.onload = showQuestion;
+    startQuiz();
 </script>
-
 </body>
 </html>
