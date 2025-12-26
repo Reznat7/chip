@@ -78,30 +78,30 @@
         }
 
         /* УВЕЛИЧЕННЫЙ ТЕКСТ ВНУТРИ ТЕСТА */
-        .question { font-size: 1.6em; margin-bottom: 25px; min-height: 60px; color: var(--primary); font-weight: bold; line-height: 1.3; }
-        .options { display: grid; gap: 12px; }
-        button.opt-btn { background-color: #3d3d3d; color: white; border: 2px solid transparent; padding: 18px; border-radius: 12px; cursor: pointer; font-size: 1.3em; transition: 0.2s; font-weight: 600; }
+        .question { font-size: 2em; margin-bottom: 25px; min-height: 60px; color: var(--primary); font-weight: bold; line-height: 1.3; }
+        .options { display: grid; gap: 15px; }
+        button.opt-btn { background-color: #3d3d3d; color: white; border: 2px solid transparent; padding: 22px; border-radius: 15px; cursor: pointer; font-size: 1.6em; transition: 0.2s; font-weight: 600; }
         button.opt-btn:hover { background-color: #444; border-color: var(--primary); }
         
-        .progress { color: #888; font-size: 1.2em; margin-bottom: 20px; font-weight: bold; }
-        h2.test-title { color: var(--primary); margin: 5px 0 15px; font-size: 1.8em; text-transform: uppercase; }
+        .progress { color: #888; font-size: 1.5em; margin-bottom: 20px; font-weight: bold; }
+        h2.test-title { color: var(--primary); margin: 5px 0 20px; font-size: 2.4em; text-transform: uppercase; }
 
         #result { display: none; padding-bottom: 30px; }
-        .diagnosis-title { color: var(--primary); font-size: 2.2em; margin-top: 15px; font-weight: bold; }
-        .description { font-style: italic; margin: 15px 0; line-height: 1.5; color: #ddd; font-size: 1.3em; }
+        .diagnosis-title { color: var(--primary); font-size: 2.8em; margin-top: 20px; font-weight: bold; }
+        .description { font-style: italic; margin: 20px 0; line-height: 1.5; color: #ddd; font-size: 1.8em; }
         
-        .reveal-btn { background-color: var(--primary); color: white; border: none; padding: 20px; font-size: 1.3em; font-weight: bold; border-radius: 50px; cursor: pointer; width: 100%; margin: 20px 0; }
+        .reveal-btn { background-color: var(--primary); color: white; border: none; padding: 25px; font-size: 1.6em; font-weight: bold; border-radius: 50px; cursor: pointer; width: 100%; margin: 25px 0; }
         
-        #emoji-portrait { display: none; font-size: 100px; background: #333; border-radius: 50%; width: 140px; height: 140px; line-height: 140px; margin: 20px auto; border: 4px solid var(--primary); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        #emoji-portrait { display: none; font-size: 120px; background: #333; border-radius: 50%; width: 160px; height: 160px; line-height: 160px; margin: 25px auto; border: 4px solid var(--primary); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
         
-        .share-btn { background-color: #28a745; color: white; border: none; padding: 15px; border-radius: 12px; width: 100%; cursor: pointer; font-weight: bold; font-size: 1.2em; }
+        .share-btn { background-color: #28a745; color: white; border: none; padding: 20px; border-radius: 15px; width: 100%; cursor: pointer; font-weight: bold; font-size: 1.6em; }
 
         /* АНИМИРОВАННАЯ КНОПКА ЗАКРЫТИЯ */
         .close-test { 
-            background: #444; border: 3px solid var(--primary); color: white; 
-            cursor: pointer; font-size: 16px; margin-top: 25px; padding: 12px 35px; 
-            border-radius: 25px; text-transform: uppercase; font-weight: bold;
+            background: #444; border: 4px solid var(--primary); color: white; 
+            cursor: pointer; font-size: 1.2em; margin-top: 30px; padding: 15px 40px; 
+            border-radius: 30px; text-transform: uppercase; font-weight: bold;
             animation: pulseClose 2s infinite ease-in-out;
         }
         @keyframes pulseClose {
@@ -140,7 +140,7 @@
                 <div id="emoji-portrait"></div>
 
                 <button class="share-btn" onclick="copyResult()">Скопировать результат</button>
-                <button class="opt-btn" style="width:100%; margin-top:15px;" onclick="location.reload()">Пройти еще раз</button>
+                <button class="opt-btn" style="width:100%; margin-top:20px;" onclick="restartQuiz()">Пройти еще раз</button>
                 
                 <button class="close-test" onclick="closeQuiz()">Закрыть тест</button>
             </div>
@@ -162,6 +162,17 @@
 
         function closeQuiz() {
             document.getElementById('test-overlay').style.display = 'none';
+        }
+
+        // Функция для перезапуска теста
+        function restartQuiz() {
+            currentStep = 0;
+            totalScore = 0;
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('quiz-ui').style.display = 'block';
+            document.getElementById('revBtn').style.display = 'block';
+            document.getElementById('emoji-portrait').style.display = 'none';
+            startQuiz();
         }
 
         let currentStep = 0;
