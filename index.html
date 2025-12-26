@@ -2,103 +2,245 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>GADIONOVKA666</title>
-    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
+    <title>GADIONOVKA666 - TEST EDITION</title>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Orbitron:wght@900&display=swap" rel="stylesheet">
     <style>
-        /* --- ФОН --- */
+        /* --- БАЗОВЫЙ ФОН И СТИЛИ --- */
+        :root {
+            --primary: #ff4d4d;
+            --bg: #1a1a1a;
+            --card: #2d2d2d;
+            --text: #ffffff;
+        }
+
         body {
             margin: 0; padding: 0; background: #000;
             background-image: 
                 radial-gradient(2px 2px at 20px 30px, #fff, rgba(255,255,255,0.3) 8px, transparent 15px),
-                radial-gradient(1.5px 1.5px at 60px 70px, #fff, rgba(255,255,255,0.2) 6px, transparent 12px),
-                radial-gradient(2px 2px at 110px 130px, #fff, rgba(255,255,255,0.3) 8px, transparent 15px),
-                radial-gradient(1.5px 1.5px at 160px 40px, #fff, rgba(255,255,255,0.2) 6px, transparent 12px);
+                radial-gradient(1.5px 1.5px at 60px 70px, #fff, rgba(255,255,255,0.2) 6px, transparent 12px);
             background-size: 120px 120px;
             animation: starsBlink 4s ease-in-out infinite alternate;
             color: white; display: flex; flex-direction: column; align-items: center;
-            min-height: 100vh; overflow-x: hidden; font-family: Arial, sans-serif; position: relative;
+            min-height: 100vh; overflow-x: hidden; font-family: 'Segoe UI', Arial, sans-serif; position: relative;
         }
         @keyframes starsBlink { 0% { opacity: 1; } 100% { opacity: 0.6; } }
 
         /* --- ГИРЛЯНДЫ --- */
         .light { width: 12px; height: 18px; border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%; position: relative; transition: 0.3s; }
         .light::before { content: ''; position: absolute; background: #111; top: -3px; left: 3px; width: 6px; height: 4px; }
-        
         .garland-top { width: 100%; height: 40px; border-bottom: 1px solid #222; display: flex; justify-content: space-around; padding: 0 5px; z-index: 10; }
         .garland-top .light { margin-top: 15px; } 
-        
         .garland-side { position: fixed; top: 0; height: 100vh; width: 20px; display: flex; flex-direction: column; justify-content: space-around; align-items: center; z-index: 5; }
         .left-s { left: 5px; } .right-s { right: 5px; }
-        
         .on .light { animation: blink 0.8s infinite alternate; }
         .off .light { background: #111 !important; box-shadow: none !important; animation: none !important; }
-        
         @keyframes blink { from { opacity: 0.4; } to { opacity: 1; box-shadow: 0 0 15px currentColor; } }
-        
         .light:nth-child(4n+1) { background: #ff0000; color: #ff0000; }
         .light:nth-child(4n+2) { background: #00ff00; color: #00ff00; }
         .light:nth-child(4n+3) { background: #0066ff; color: #0066ff; }
         .light:nth-child(4n+4) { background: #ffff00; color: #ffff00; }
 
-        /* --- ЗАГОЛОВОК --- */
-        h1 { 
-            font-family: 'Creepster', cursive; 
-            color: #FFD700; 
-            width: 98%; 
-            text-align: center; 
-            font-size: 14vw; 
-            margin: 10vh 0 40px; 
-            text-transform: uppercase; 
-            letter-spacing: 1vw; 
-            text-shadow: 4px 4px 0px #4b3b00; 
-            z-index: 2; 
+        h1.main-title { font-family: 'Creepster', cursive; color: #FFD700; width: 98%; text-align: center; font-size: 12vw; margin: 60px 0 20px; text-transform: uppercase; letter-spacing: 1vw; text-shadow: 4px 4px 0px #4b3b00; z-index: 2; }
+
+        /* --- КНОПКИ --- */
+        .btn-base { cursor: pointer; transition: 0.3s; text-transform: uppercase; font-weight: 900; border: none; z-index: 100; margin: 10px; }
+        
+        .btn-toggle { background-color: #000; color: #fff; font-size: 20px; padding: 15px 35px; border: 4px solid #00f2ff; box-shadow: 0 0 15px #00f2ff; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); }
+
+        /* АНИМИРОВАННАЯ КНОПКА ТЕСТ */
+        .btn-test { 
+            background: var(--primary); color: white; font-size: 28px; padding: 20px 60px; border-radius: 50px; 
+            box-shadow: 0 0 20px var(--primary); animation: pulseBtn 1.5s infinite; 
+        }
+        @keyframes pulseBtn {
+            0% { transform: scale(1); box-shadow: 0 0 20px var(--primary); }
+            50% { transform: scale(1.05); box-shadow: 0 0 40px var(--primary); }
+            100% { transform: scale(1); box-shadow: 0 0 20px var(--primary); }
         }
 
-        /* --- КНОПКА ГИРЛЯНДЫ --- */
-        .btn-toggle { 
-            cursor: pointer;
-            background-color: #000; 
-            color: #fff; 
-            font-size: 24px; 
-            padding: 15px 45px; 
-            border: 4px solid #00f2ff; 
-            box-shadow: 0 0 25px #00f2ff;
-            text-transform: uppercase;
-            font-weight: 900;
-            z-index: 100;
-            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+        /* --- КОНТЕЙНЕР ТЕСТА (МОДАЛЬНОЕ ОКНО) --- */
+        #test-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 2000; justify-content: center; align-items: center;
+            overflow-y: auto; padding: 20px;
         }
+
+        #quiz-container {
+            background-color: var(--card); padding: 30px; border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8); max-width: 500px; width: 100%;
+            text-align: center; position: relative; border: 2px solid #444; color: white;
+        }
+
+        .ver-indicator { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); color: var(--primary); font-weight: bold; font-size: 1.5em; }
+        .question { font-size: 1.3em; margin-bottom: 25px; min-height: 60px; color: var(--primary); font-weight: bold; }
+        .options { display: grid; gap: 12px; }
+        button.opt-btn { background-color: #3d3d3d; color: white; border: 2px solid transparent; padding: 16px; border-radius: 12px; cursor: pointer; font-size: 1.05em; transition: 0.2s; }
+        button.opt-btn:hover { background-color: #444; border-color: var(--primary); }
+        #result { display: none; }
+        .diagnosis-title { color: var(--primary); font-size: 2em; margin-top: 15px; font-weight: bold; }
+        .description { font-style: italic; margin: 15px 0; line-height: 1.6; color: #ddd; }
+        .reveal-btn { background-color: var(--primary); color: white; border: none; padding: 20px; font-size: 1.1em; font-weight: bold; border-radius: 50px; cursor: pointer; width: 100%; margin: 20px 0; }
+        #emoji-portrait { display: none; font-size: 100px; background: #333; border-radius: 50%; width: 150px; height: 150px; line-height: 150px; margin: 20px auto; border: 4px solid var(--primary); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+        .share-btn { background-color: #28a745; color: white; border: none; padding: 12px; border-radius: 10px; width: 100%; margin-top: 10px; cursor: pointer; font-weight: bold; }
+        .close-test { background: none; border: none; color: #666; cursor: pointer; font-size: 16px; margin-top: 10px; text-decoration: underline; }
     </style>
 </head>
 <body>
-    <div class="garland-top on garland-node">
-        <div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div>
-        <div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div>
-    </div>
 
-    <div class="garland-side left-s on garland-node">
-        <div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div>
-    </div>
-    <div class="garland-side right-s on garland-node">
-        <div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div>
-    </div>
+    <div class="garland-top on garland-node"><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div></div>
+    <div class="garland-side left-s on garland-node"><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div></div>
+    <div class="garland-side right-s on garland-node"><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div></div>
 
-    <h1>GADIONOVKA666</h1>
+    <h1 class="main-title">GADIONOVKA666</h1>
 
-    <button class="btn-toggle" onclick="toggleGarland()">ЖМЯК</button>
+    <button class="btn-base btn-test" onclick="openQuiz()">🔥 ПРОЙТИ ТЕСТ 🔥</button>
+    <button class="btn-base btn-toggle" onclick="toggleGarland()">ВКЛ/ВЫКЛ СВЕТ</button>
+
+    <div id="test-overlay">
+        <div id="quiz-container">
+            <div class="ver-indicator">14</div>
+            
+            <div id="quiz-ui">
+                <h1 style="color: var(--primary);">Gadionovka 666</h1>
+                <div class="progress" id="progress" style="color: #888; margin-bottom: 20px;">Вопрос 1 из 10</div>
+                <div class="question" id="qText">Загрузка...</div>
+                <div class="options" id="oCont"></div>
+            </div>
+
+            <div id="result">
+                <h1 style="color: var(--primary);">Твой диагноз:</h1>
+                <div class="diagnosis-title" id="diag-title"></div>
+                <div class="description" id="diag-desc"></div>
+                
+                <button class="reveal-btn" id="revBtn" onclick="showPortrait()">
+                    Этот персонаж похож на вас
+                </button>
+
+                <div id="emoji-portrait"></div>
+
+                <button class="share-btn" onclick="copyResult()">Скопировать для чата 666</button>
+                <button class="opt-btn" style="width:100%; margin-top:10px;" onclick="location.reload()">Пройти еще раз</button>
+            </div>
+            
+            <button class="close-test" onclick="closeQuiz()">Закрыть тест и вернуться</button>
+        </div>
+    </div>
 
     <script>
+        // ЛОГИКА ГИРЛЯНД
         const horrorSound = new Audio('https://www.myinstants.com/media/sounds/horror-ghost-sound-effect.mp3');
-
         function toggleGarland() { 
             const nodes = document.querySelectorAll('.garland-node');
-            nodes.forEach(n => { 
-                n.classList.toggle('on'); 
-                n.classList.toggle('off'); 
+            nodes.forEach(n => { n.classList.toggle('on'); n.classList.toggle('off'); });
+            horrorSound.currentTime = 0; horrorSound.play().catch(()=>{});
+        }
+
+        // ЛОГИКА ТЕСТА
+        function openQuiz() {
+            document.getElementById('test-overlay').style.display = 'flex';
+            startQuiz();
+        }
+
+        function closeQuiz() {
+            document.getElementById('test-overlay').style.display = 'none';
+        }
+
+        let currentStep = 0;
+        let totalScore = 0;
+        let finalEmoji = "";
+        let finalTitle = "";
+
+        const questions = [
+            { q: "Как ты заходишь в чат Gadionovka 666?", a: ["С ноги и мемом", "Тихо читаю", "Сразу кружочек"] },
+            { q: "Твое идеальное состояние в субботу вечером:", a: ["Горизонтальное", "Турбо-режим", "Не помню"] },
+            { q: "Что ты сделаешь, если увидишь привидение?", a: ["Предложу вступить", "Спрошу про Плюс", "Убегу"] },
+            { q: "Твой главный талант — это...", a: ["Сон 12 часов", "Странные идеи", "Промолчать"] },
+            { q: "Любимая еда для посиделок?", a: ["Острое", "Пицца", "Энергетик"] },
+            { q: "Твой уровень стресса сейчас:", a: ["Капибара", "Нервный тик", "Я и стресс"] },
+            { q: "Если бы ты был животным, то каким?", a: ["Ленивец", "Енот", "Кот-арбуз"] },
+            { q: "Твое отношение к дедлайнам:", a: ["Не слышал", "Бегу за ними", "Побеждаю"] },
+            { q: "Что ты выберешь?", a: ["Миллион $", "Летать", "Актив в чате"] },
+            { q: "Твой девиз по жизни:", a: ["Главное — обед", "Отвага!", "Нормально будет"] }
+        ];
+
+        const diagnoses = [
+            { t: "Хронический Хохотун", d: "Вы смеетесь даже над несмешными шутками. Ваша аура исцеляет.", e: "😂" },
+            { t: "Магистр Диванных Наук", d: "Вы достигли просветления, не вставая с кровати.", e: "🛋️" },
+            { t: "Меметический Барон", d: "Ваш мозг на 80% состоит из картинок с котами.", e: "😼" },
+            { t: "Профессиональный Душнила", d: "Вы знаете, как правильно, и любите это объяснять.", e: "😤" },
+            { t: "Энергетический Вампир-Вегетарианец", d: "Вы питаетесь только позитивной энергией друзей.", e: "🥦" },
+            { t: "Ниндзя Гадионовки", d: "Вы всё видите, всё знаете, но молчите в чате.", e: "🥷" },
+            { t: "Король Рандома", d: "Никто не знает, что вы скажете в следующую секунду.", e: "🎲" },
+            { t: "Сверхзвуковой Лентяй", d: "Вы умудряетесь ничего не делать очень быстро.", e: "🦥" },
+            { t: "Амбассадор Чая и Печенек", d: "Любая проблема решается для вас перекусом.", e: "🍪" },
+            { t: "Генератор Кринжа", d: "Ваши шутки настолько плохи, что они гениальны.", e: "🤡" },
+            { t: "Цифровой Философ", d: "Вы ищете смысл жизни в уведомлениях телефона.", e: "📱" },
+            { t: "Верховный Хранитель Секретов", d: "Вам можно доверить всё. Вы надежны как сейф.", e: "🤐" },
+            { t: "Повелитель Дедлайнов", d: "Вы живете на грани. Адреналин — ваш завтрак.", e: "🧨" },
+            { t: "Легенда Ночного Жора", d: "Холодильник — ваш лучший друг после полуночи.", e: "🍗" },
+            { t: "Мистер Позитив", d: "Вы настолько оптимистичны, что это подозрительно.", e: "☀️" },
+            { t: "Маг Социальных Сетей", d: "Вы знаете о друзьях больше, чем они сами.", e: "🤳" },
+            { t: "Космический Путешественник", d: "Часто витаете в облаках. Там красиво.", e: "👨‍🚀" },
+            { t: "Главный По Тарелочкам", d: "Вы всегда знаете, где самая вкусная еда.", e: "🍝" },
+            { t: "Интроверт-Экстремал", d: "Вы любите людей, но на расстоянии 5 км.", e: "🏚️" },
+            { t: "Техно-Шаман", d: "У вас всё работает силой мысли (иногда).", e: "🛠️" },
+            { t: "Мистический Соня", d: "Ваши сны интереснее, чем реальность.", e: "😴" },
+            { t: "Мастер Переобувания", d: "Гений дипломатии и смены мнений.", e: "👟" },
+            { t: "Охотник за Акциями", d: "Вы знаете, где скидки и бесплатная пицца.", e: "💰" },
+            { t: "Душа Гадионовки", d: "Без вас этот чат был бы просто буквами.", e: "❤️" },
+            { t: "Скрытый Миллионер", d: "Вы выглядите скромно, но в душе — золото.", e: "💎" },
+            { t: "Пророк Переписок", d: "Вы печатаете ответ еще до вопроса.", e: "🔮" },
+            { t: "Детектив Мемов", d: "Можете найти оригинал любого видео за миг.", e: "🕵️" },
+            { t: "Ультра-Миротворец", d: "Разруливаете конфликты одной фразой.", e: "🕊️" },
+            { t: "Вечный Студент", d: "Вы каждый день узнаете новое и тут же забываете.", e: "🎓" },
+            { t: "Анархист-Одуванчик", d: "Выглядите мило, но готовы захватить мир.", e: "😈" }
+        ];
+
+        function startQuiz() {
+            const qText = document.getElementById('qText');
+            const oCont = document.getElementById('oCont');
+            const prog = document.getElementById('progress');
+
+            if (currentStep >= 10) {
+                document.getElementById('quiz-ui').style.display = 'none';
+                document.getElementById('result').style.display = 'block';
+                let idx = Math.floor((totalScore / 20) * 29);
+                if (idx > 29) idx = 29;
+                const res = diagnoses[idx];
+                document.getElementById('diag-title').innerText = res.t;
+                document.getElementById('diag-desc').innerText = res.d;
+                finalEmoji = res.e;
+                finalTitle = res.t;
+                return;
+            }
+
+            const q = questions[currentStep];
+            prog.innerText = "Вопрос " + (currentStep + 1) + " из 10";
+            qText.innerText = q.q;
+            oCont.innerHTML = '';
+            
+            q.a.forEach((ans, i) => {
+                const b = document.createElement('button');
+                b.className = 'opt-btn';
+                b.innerText = ans;
+                b.onclick = () => { totalScore += i; currentStep++; startQuiz(); };
+                oCont.appendChild(b);
             });
-            // Звук при нажатии
-            horrorSound.currentTime = 0; 
-            horrorSound.play().catch(()=>{});
+        }
+
+        function showPortrait() {
+            document.getElementById('revBtn').style.display = 'none';
+            const port = document.getElementById('emoji-portrait');
+            port.innerText = finalEmoji;
+            port.style.display = 'block';
+        }
+
+        function copyResult() {
+            const text = "Мой диагноз в Gadionovka 666: " + finalTitle + " " + finalEmoji + "\nУзнай свой тут: " + window.location.href;
+            navigator.clipboard.writeText(text).then(() => {
+                alert("Результат скопирован! Вставляй в чат друзей.");
+            });
         }
     </script>
 </body>
