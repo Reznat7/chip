@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>GADIONOVKA666 - MEGA TEST</title>
+    <title>GADIONOVKA666 - MEGA EDITION</title>
     <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
     <style>
         /* --- БАЗОВЫЙ ФОН --- */
@@ -11,6 +11,7 @@
             --bg: #1a1a1a;
             --card: #2d2d2d;
             --text: #ffffff;
+            --chill: #00f2ff;
         }
 
         body {
@@ -40,44 +41,54 @@
         .light:nth-child(4n+3) { background: #0066ff; color: #0066ff; }
         .light:nth-child(4n+4) { background: #ffff00; color: #ffff00; }
 
-        h1.main-title { font-family: 'Creepster', cursive; color: #FFD700; width: 98%; text-align: center; font-size: 12vw; margin: 60px 0 20px; text-transform: uppercase; letter-spacing: 1vw; text-shadow: 4px 4px 0px #4b3b00; z-index: 2; }
+        h1.main-title { font-family: 'Creepster', cursive; color: #FFD700; width: 98%; text-align: center; font-size: 10vw; margin: 60px 0 20px; text-transform: uppercase; letter-spacing: 1vw; text-shadow: 4px 4px 0px #4b3b00; z-index: 2; }
 
-        /* --- КНОПКИ ГЛАВНЫЕ --- */
-        .btn-base { cursor: pointer; transition: 0.3s; text-transform: uppercase; font-weight: 900; border: none; z-index: 100; margin: 10px; font-family: 'Orbitron', sans-serif; }
-        .btn-toggle { background-color: #000; color: #fff; font-size: 20px; padding: 10px 35px; border: 4px solid #00f2ff; box-shadow: 0 0 15px #00f2ff; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); }
-        .btn-test { background: var(--primary); color: white; font-size: 24px; padding: 15px 50px; border-radius: 50px; box-shadow: 0 0 20px var(--primary); animation: pulseBtn 1.5s infinite; }
+        /* --- КОНТЕЙНЕР КНОПОК --- */
+        .main-btns-container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; z-index: 100; margin-bottom: 20px; }
+
+        .btn-base { cursor: pointer; transition: 0.3s; text-transform: uppercase; font-weight: 900; border: none; font-family: 'Orbitron', sans-serif; }
+        
+        .btn-toggle { background-color: #000; color: #fff; font-size: 20px; padding: 10px 35px; border: 4px solid #00f2ff; box-shadow: 0 0 15px #00f2ff; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); width: auto; margin: 0 auto; display: block;}
+
+        .btn-test { background: var(--primary); color: white; font-size: 20px; padding: 15px 40px; border-radius: 50px; box-shadow: 0 0 20px var(--primary); animation: pulseBtn 1.5s infinite; }
+        
+        /* КНОПКА ПОКАТАТЬСЯ */
+        .btn-chill { background: var(--chill); color: #000; font-size: 20px; padding: 15px 40px; border-radius: 50px; box-shadow: 0 0 20px var(--chill); display: flex; align-items: center; gap: 10px; }
+        .btn-chill span { display: inline-block; animation: carDrive 0.5s infinite linear; font-size: 1.5em; }
+
+        @keyframes carDrive { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
         @keyframes pulseBtn { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-        /* --- КОНТЕЙНЕР ТЕСТА (НИЖНЯЯ ПОЛОВИНА) --- */
+        /* --- КОНТЕЙНЕР ТЕСТА --- */
         #test-overlay { display: none; position: fixed; bottom: 0; left: 0; width: 100%; height: 50vh; z-index: 2000; justify-content: center; align-items: flex-end; }
         #quiz-container { background-color: var(--card); padding: 30px; border-radius: 25px 25px 0 0; box-shadow: 0 -15px 50px rgba(0,0,0,1); width: 100%; height: 100%; text-align: center; border: 3px solid #444; border-bottom: none; overflow-y: auto; box-sizing: border-box; }
 
-        /* ГИГАНТСКИЙ ТЕКСТ В ТЕСТЕ */
         .question { font-size: 2.8em; margin-bottom: 30px; min-height: 80px; color: var(--primary); font-weight: 900; text-shadow: 3px 3px 6px rgba(0,0,0,0.8); line-height: 1.1; }
-        .progress { color: #888; font-size: 2em; margin-bottom: 20px; font-weight: 900; letter-spacing: 2px; }
+        .progress { color: #888; font-size: 2em; margin-bottom: 20px; font-weight: 900; }
         .test-title { color: var(--primary); margin: 0 0 20px; font-size: 3em; text-transform: uppercase; text-shadow: 4px 4px 0px #000; font-weight: 900; }
 
         .options { display: grid; gap: 20px; }
-        button.opt-btn { background-color: #333; color: white; border: 4px solid transparent; padding: 25px; border-radius: 20px; cursor: pointer; font-size: 2.2em; transition: 0.2s; font-weight: 900; font-family: 'Orbitron', sans-serif; text-shadow: 2px 2px 4px #000; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        button.opt-btn { background-color: #333; color: white; border: 4px solid transparent; padding: 25px; border-radius: 20px; cursor: pointer; font-size: 2.2em; transition: 0.2s; font-weight: 900; font-family: 'Orbitron', sans-serif; }
         button.opt-btn:hover { background-color: #444; border-color: var(--primary); transform: scale(1.02); }
 
         #result { display: none; padding-bottom: 40px; }
-        .diagnosis-title { color: var(--primary); font-size: 3.5em; margin-top: 25px; font-weight: 900; text-shadow: 3px 3px 0px #000; }
+        .diagnosis-title { color: var(--primary); font-size: 3.5em; margin-top: 25px; font-weight: 900; }
         .description { font-style: italic; margin: 20px 0; line-height: 1.3; color: #eee; font-size: 2.3em; font-weight: 700; }
-        
-        .reveal-btn { background-color: var(--primary); color: white; border: none; padding: 30px; font-size: 2.2em; font-weight: 900; border-radius: 60px; cursor: pointer; width: 100%; margin: 30px 0; font-family: 'Orbitron', sans-serif; box-shadow: 0 0 25px var(--primary); }
+        .reveal-btn { background-color: var(--primary); color: white; border: none; padding: 30px; font-size: 2.2em; font-weight: 900; border-radius: 60px; cursor: pointer; width: 100%; margin: 30px 0; font-family: 'Orbitron', sans-serif; }
         #emoji-portrait { display: none; font-size: 150px; background: #222; border-radius: 50%; width: 200px; height: 200px; line-height: 200px; margin: 30px auto; border: 6px solid var(--primary); animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
-        
-        .share-btn { background-color: #28a745; color: white; border: none; padding: 25px; border-radius: 20px; width: 100%; cursor: pointer; font-weight: 900; font-size: 2em; font-family: 'Orbitron', sans-serif; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .share-btn { background-color: #28a745; color: white; border: none; padding: 25px; border-radius: 20px; width: 100%; cursor: pointer; font-weight: 900; font-size: 2em; }
+        .close-test { background: #222; border: 5px solid var(--primary); color: var(--primary); cursor: pointer; font-size: 1.8em; margin: 40px auto 20px; padding: 20px 60px; border-radius: 50px; text-transform: uppercase; font-weight: 900; display: block; animation: pulseClose 2s infinite ease-in-out; }
+        @keyframes pulseClose { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 30px var(--primary); } }
 
-        /* КНОПКА ЗАКРЫТИЯ */
-        .close-test { 
-            background: #222; border: 5px solid var(--primary); color: var(--primary); cursor: pointer; font-size: 1.8em; 
-            margin: 40px auto 20px; padding: 20px 60px; border-radius: 50px; text-transform: uppercase; font-weight: 900;
-            display: block; animation: pulseClose 2s infinite ease-in-out; font-family: 'Orbitron', sans-serif;
+        /* --- ЭКРАН ОТСЧЕТА --- */
+        #chill-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95);
+            z-index: 3000; flex-direction: column; justify-content: center; align-items: center; text-align: center;
         }
-        @keyframes pulseClose { 0% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 30px var(--primary); } 100% { transform: scale(1); opacity: 0.8; } }
+        #chill-counter { font-size: 15vw; color: var(--chill); font-weight: 900; animation: pulseCountdown 1s infinite; }
+        #chill-msg { font-size: 4vw; color: #fff; margin-top: 20px; display: none; }
+        @keyframes pulseCountdown { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.7; } }
     </style>
 </head>
 <body>
@@ -88,8 +99,17 @@
 
     <h1 class="main-title">GADIONOVKA666</h1>
 
-    <button class="btn-base btn-test" onclick="openQuiz()">🔥 ПРОЙТИ ТЕСТ 🔥</button>
+    <div class="main-btns-container">
+        <button class="btn-base btn-test" onclick="openQuiz()">🔥 ПРОЙТИ ТЕСТ 🔥</button>
+        <button class="btn-base btn-chill" onclick="startChill()">ПОКАТАТЬСЯ НА ЧИЛЕ <span>🚙</span></button>
+    </div>
+    
     <button class="btn-base btn-toggle" onclick="toggleGarland()">ЖМЯК</button>
+
+    <div id="chill-overlay">
+        <div id="chill-counter">5</div>
+        <div id="chill-msg">Хочешь покататься, нажми кнопку begin..</div>
+    </div>
 
     <div id="test-overlay">
         <div id="quiz-container">
@@ -100,7 +120,6 @@
                 <div class="options" id="oCont"></div>
                 <button class="close-test" onclick="closeQuiz()">Закрыть текст</button>
             </div>
-
             <div id="result">
                 <h2 class="test-title">ВАШ ДИАГНОЗ ЭТО...</h2>
                 <div class="diagnosis-title" id="diag-title"></div>
@@ -116,10 +135,9 @@
 
     <script>
         const horrorSound = new Audio('https://www.myinstants.com/media/sounds/horror-ghost-sound-effect.mp3');
-        // Заменил клик на максимально громкий и четкий
         const clickSound = new Audio('https://www.soundjay.com/buttons/sounds/button-16.mp3');
         const drumSound = new Audio('https://www.myinstants.com/media/sounds/drum-roll.mp3');
-        drumSound.volume = 0.5; // Громкость 50%
+        drumSound.volume = 0.5;
 
         function toggleGarland() { 
             const nodes = document.querySelectorAll('.garland-node');
@@ -127,26 +145,34 @@
             horrorSound.currentTime = 0; horrorSound.play().catch(()=>{});
         }
 
-        function openQuiz() {
-            document.getElementById('test-overlay').style.display = 'flex';
-            restartQuiz();
+        // ЛОГИКА ОТСЧЕТА И ПЕРЕХОДА
+        function startChill() {
+            clickSound.play();
+            const overlay = document.getElementById('chill-overlay');
+            const counter = document.getElementById('chill-counter');
+            const msg = document.getElementById('chill-msg');
+            overlay.style.display = 'flex';
+            
+            let timeLeft = 5;
+            const timer = setInterval(() => {
+                timeLeft--;
+                counter.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    counter.style.display = 'none';
+                    msg.style.display = 'block';
+                    setTimeout(() => {
+                        window.location.href = "https://slowroads.io/";
+                    }, 1500);
+                }
+            }, 1000);
         }
 
-        function closeQuiz() {
-            document.getElementById('test-overlay').style.display = 'none';
-        }
-
-        function restartQuiz() {
-            currentStep = 0; totalScore = 0;
-            document.getElementById('result').style.display = 'none';
-            document.getElementById('quiz-ui').style.display = 'block';
-            document.getElementById('revBtn').style.display = 'block';
-            document.getElementById('emoji-portrait').style.display = 'none';
-            startQuiz();
-        }
+        function openQuiz() { document.getElementById('test-overlay').style.display = 'flex'; restartQuiz(); }
+        function closeQuiz() { document.getElementById('test-overlay').style.display = 'none'; }
+        function restartQuiz() { currentStep = 0; totalScore = 0; document.getElementById('result').style.display = 'none'; document.getElementById('quiz-ui').style.display = 'block'; document.getElementById('revBtn').style.display = 'block'; document.getElementById('emoji-portrait').style.display = 'none'; startQuiz(); }
 
         let currentStep = 0, totalScore = 0, finalEmoji = "", finalTitle = "";
-
         const questions = [
             { q: "Как ты заходишь в чат Gadionovka 666?", a: ["С ноги и мемом", "Тихо читаю", "Сразу кружочек"] },
             { q: "Твое идеальное состояние в субботу вечером:", a: ["Горизонтальное", "Турбо-режим", "Не помню"] },
@@ -193,32 +219,13 @@
                 const b = document.createElement('button');
                 b.className = 'opt-btn';
                 b.innerText = ans;
-                b.onclick = () => { 
-                    clickSound.currentTime = 0;
-                    clickSound.play().catch(e => console.log("Sound block")); 
-                    totalScore += i; 
-                    currentStep++; 
-                    startQuiz(); 
-                };
+                b.onclick = () => { clickSound.currentTime = 0; clickSound.play().catch(e => {}); totalScore += i; currentStep++; startQuiz(); };
                 oCont.appendChild(b);
             });
         }
 
-        function showPortrait() {
-            drumSound.currentTime = 0;
-            drumSound.play();
-            setTimeout(() => {
-                document.getElementById('revBtn').style.display = 'none';
-                const port = document.getElementById('emoji-portrait');
-                port.innerText = finalEmoji;
-                port.style.display = 'block';
-            }, 1500);
-        }
-
-        function copyResult() {
-            const text = "Мой диагноз в Gadionovka 666: " + finalTitle + " " + finalEmoji;
-            navigator.clipboard.writeText(text).then(() => alert("Скопировано!"));
-        }
+        function showPortrait() { drumSound.currentTime = 0; drumSound.play(); setTimeout(() => { document.getElementById('revBtn').style.display = 'none'; const port = document.getElementById('emoji-portrait'); port.innerText = finalEmoji; port.style.display = 'block'; }, 1500); }
+        function copyResult() { const text = "Мой диагноз в Gadionovka 666: " + finalTitle + " " + finalEmoji; navigator.clipboard.writeText(text).then(() => alert("Скопировано!")); }
     </script>
 </body>
 </html>
