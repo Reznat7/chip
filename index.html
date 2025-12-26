@@ -3,111 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Чёрный Плащ!</title>
+    <title>Ужас, летящий на крыльях ночи!</title>
     <style>
-        /* CSS: Оформление в стиле Чёрного Плаща */
         body {
-            background-color: #2c003e; /* Темно-фиолетовый */
+            background: #1a0033; /* Очень темный фиолетовый */
+            /* Градиент, имитирующий ночное небо */
+            background: linear-gradient(180deg, #0d001a 0%, #2c003e 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: white;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            overflow: hidden;
         }
 
-        .container {
+        .card {
             text-align: center;
-            background: #4b0082; /* Индиго */
-            padding: 40px;
-            border-radius: 30px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.6);
-            border: 5px solid #000;
-            max-width: 450px;
+            background: rgba(75, 0, 130, 0.9);
+            padding: 50px;
+            border-radius: 20px;
+            border: 4px solid #ffd700;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.2);
+            position: relative;
+            z-index: 10;
         }
 
         h1 {
-            color: #ffd700; /* Золотой как пуговицы на плаще */
-            text-shadow: 3px 3px 0px #000;
-            font-size: 32px;
+            color: #ffd700;
+            text-transform: uppercase;
+            font-size: 36px;
             margin-bottom: 10px;
+            text-shadow: 3px 3px 0px #000;
         }
 
-        .quote {
-            font-style: italic;
-            color: #d8bfd8;
-            margin-bottom: 25px;
+        .mask {
+            font-size: 80px;
+            margin-bottom: 20px;
+            display: block;
         }
 
         .btn-play {
-            background-color: #000;
+            background: #000;
             color: #ffd700;
-            border: 2px solid #ffd700;
-            padding: 20px 40px;
+            border: 3px solid #ffd700;
+            padding: 15px 40px;
             font-size: 24px;
             font-weight: bold;
-            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            border-radius: 5px;
+            transition: 0.3s;
         }
 
         .btn-play:hover {
-            background-color: #333;
-            transform: scale(1.05);
+            background: #ffd700;
+            color: #000;
             box-shadow: 0 0 20px #ffd700;
         }
 
-        .btn-play:active {
-            transform: scale(0.95);
-        }
-
         .status {
-            margin-top: 25px;
-            font-weight: bold;
-            color: #ffd700;
-            min-height: 24px;
+            color: #fff;
+            margin-top: 20px;
+            font-style: italic;
         }
 
-        /* Анимация пульсации при проигрывании */
-        .playing-animation {
-            animation: shadow-pulse 1.5s infinite;
+        /* Анимация мигания глаз при игре */
+        .playing .mask {
+            animation: glow 1s infinite alternate;
         }
 
-        @keyframes shadow-pulse {
-            0% { box-shadow: 0 0 10px #ffd700; }
-            50% { box-shadow: 0 0 30px #ffd700; }
-            100% { box-shadow: 0 0 10px #ffd700; }
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 5px #fff); }
+            to { filter: drop-shadow(0 0 20px #ffd700); }
         }
     </style>
 </head>
 <body>
 
-    <div class="container" id="mainCard">
-        <h1>Чёрный Плащ 🦆</h1>
-        <p class="quote">«Я ужас, летящий на крыльях ночи!»</p>
+    <div class="card" id="mainContainer">
+        <span class="mask">🎭</span>
+        <h1>Чёрный Плащ</h1>
+        <p style="color: #d8bfd8;">Я ужас, летящий на крыльях ночи!</p>
         
-        <button class="btn-play" id="actionBtn" onclick="toggleMusic()">От винта!</button>
+        <button class="btn-play" id="playBtn" onclick="playMusic()">ОТ ВИНТА!</button>
         
-        <p id="statusText" class="status">Сен-Канар под защитой</p>
+        <p id="status" class="status">Город спит спокойно...</p>
 
-        <audio id="darkwingSong" preload="auto">
-            <source src="https://archive.org/download/tvthemesongs/Darkwing%20Duck.mp3" type="audio/mpeg">
-            Ваш браузер не поддерживает аудио.
+        <audio id="audio">
+            <source src="https://www.myinstants.com/media/sounds/chernyi-plashch.mp3" type="audio/mpeg">
+            <source src="https://archive.org/download/darkwing-duck-russian/Darkwing%20Duck%20-%20Russian%20Theme.mp3" type="audio/mpeg">
         </audio>
     </div>
 
     <script>
-        const audio = document.getElementById('darkwingSong');
-        const statusText = document.getElementById('statusText');
-        const btn = document.getElementById('actionBtn');
-        const card = document.getElementById('mainCard');
-        let isPlaying = false;
+        const audio = document.getElementById('audio');
+        const btn = document.getElementById('playBtn');
+        const status = document.getElementById('status');
+        const container = document.getElementById('mainContainer');
+        let playing = false;
 
-        function toggleMusic() {
-            if (isPlaying) {
+        function playMusic() {
+            if (!playing) {
+                audio.play().then(() => {
+                    status.innerText = "Только свистни — он появится!";
+                    btn.innerText = "ИСЧЕЗНУТЬ";
+                    container.classList.add('playing');
+                    playing = true;
+                }).catch(e => {
+                    status.innerText = "Ошибка загрузки звука ☹️";
+                    console.log(e);
+                });
+            } else {
                 audio.pause();
                 audio.currentTime = 0;
-                statusText.innerText = "Сен-Канар под защи
+                status.innerText = "Город снова в безопасности";
+                btn.innerText = "ОТ ВИНТА!";
+                container.classList.remove('playing');
+                playing = false;
+            }
+        }
+    </script>
+
+</body>
+</html>
