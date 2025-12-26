@@ -40,7 +40,7 @@
             padding: 30px;
             border-radius: 20px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-            max-width: 550px;
+            max-width: 500px;
             width: 100%;
             text-align: center;
             position: relative;
@@ -50,6 +50,7 @@
         h1 { color: var(--primary); margin-bottom: 10px; }
         .progress { font-size: 0.9em; color: #888; margin-bottom: 20px; }
         
+        /* ВОПРОСЫ КРАСНОГО ЦВЕТА */
         .question { 
             font-size: 1.3em; 
             margin-bottom: 25px; 
@@ -75,29 +76,42 @@
 
         #result { display: none; }
         .diagnosis-title { color: var(--primary); font-size: 2em; margin-top: 15px; font-weight: bold; }
-        .description { font-style: italic; margin: 20px 0; line-height: 1.6; color: #ddd; font-size: 1.1em; }
+        .description { font-style: italic; margin: 20px 0; line-height: 1.6; color: #ddd; }
         
-        .music-btn {
-            background-color: #222;
-            border: 4px solid;
-            padding: 22px;
+        /* КНОПКА ПЕРСОНАЖА */
+        .char-btn {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 20px;
             font-size: 1.1em;
             font-weight: bold;
-            border-radius: 60px;
+            border-radius: 50px;
             cursor: pointer;
             width: 100%;
-            margin: 25px 0;
-            animation: rainbow-anim 3s infinite linear;
-            display: block;
-            color: white;
-            outline: none;
+            margin: 20px 0;
+            transition: 0.3s;
         }
 
-        @keyframes rainbow-anim {
-            0% { border-color: #ff4d4d; box-shadow: 0 0 15px #ff4d4d; }
-            33% { border-color: #4dff88; box-shadow: 0 0 15px #4dff88; }
-            66% { border-color: #4d94ff; box-shadow: 0 0 15px #4d94ff; }
-            100% { border-color: #ff4d4d; box-shadow: 0 0 15px #ff4d4d; }
+        .char-btn:hover { background-color: #ff6666; transform: scale(1.02); }
+
+        /* КОНТЕЙНЕР ДЛЯ КАРТИНКИ */
+        #char-image-container {
+            display: none;
+            margin: 20px 0;
+            animation: fadeIn 0.5s ease;
+        }
+
+        #char-img {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 15px;
+            border: 3px solid var(--primary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .restart-btn { background: none; border: 1px solid #666; color: #888; margin-top: 10px; padding: 12px; border-radius: 12px; cursor: pointer; width: 100%; }
@@ -106,7 +120,7 @@
 <body>
 
 <div id="quiz-container">
-    <div class="ver-indicator">8</div>
+    <div class="ver-indicator">9</div>
     
     <div id="quiz-ui">
         <h1>Gadionovka 666</h1>
@@ -120,11 +134,13 @@
         <div class="diagnosis-title" id="diag-title"></div>
         <div class="description" id="diag-desc"></div>
         
-        <button class="music-btn" id="musicBtn" onclick="toggleMusic()">
-            Эта песня подходит к вашему диагнозу
+        <button class="char-btn" id="showCharBtn" onclick="revealCharacter()">
+            Этот персонаж похож на вас
         </button>
 
-        <audio id="themeSong"></audio>
+        <div id="char-image-container">
+            <img id="char-img" src="" alt="Ваш персонаж">
+        </div>
 
         <button class="restart-btn" onclick="location.reload()">Пройти еще раз</button>
     </div>
@@ -133,11 +149,7 @@
 <script>
     let currentStep = 0;
     let totalScore = 0;
-    let isPlaying = false;
-    let finalUrl = "";
-
-    const audio = document.getElementById('themeSong');
-    const musicBtn = document.getElementById('musicBtn');
+    let finalImg = "";
 
     const questions = [
         { q: "Как ты заходишь в чат Gadionovka 666?", a: ["С ноги и мемом", "Тихо читаю", "Сразу кружочек"] },
@@ -152,37 +164,38 @@
         { q: "Твой девиз по жизни:", a: ["Главное — обед", "Отвага!", "Нормально будет"] }
     ];
 
+    // 30 диагнозов с картинками персонажей
     const diagnoses = [
-        { t: "Хронический Хохотун", d: "Вы смеетесь даже над несмешными шутками. Ваша аура исцеляет грусть.", s: "https://ia801309.us.archive.org/28/items/lion-king-hakuna-matata/Lion%20King%20-%20Hakuna%20Matata.mp3" },
-        { t: "Магистр Диванных Наук", d: "Вы достигли просветления, не вставая с кровати.", s: "https://ia800702.us.archive.org/1/items/the-bare-necessities/The%20Bare%20Necessities.mp3" },
-        { t: "Меметический Барон", d: "Ваш мозг на 80% состоит из картинок с котами.", s: "https://ia801004.us.archive.org/32/items/friend-like-me/Friend%20Like%20Me.mp3" },
-        { t: "Профессиональный Душнила (Любя)", d: "Вы знаете, как правильно, и не боитесь об этом сказать.", s: "https://ia601005.us.archive.org/20/items/be-our-guest/Be%20Our%20Guest.mp3" },
-        { t: "Энергетический Вампир-Вегетарианец", d: "Вы питаетесь только позитивной энергией.", s: "https://ia801004.us.archive.org/21/items/under-the-sea_202103/Under%20the%20Sea.mp3" },
-        { t: "Ниндзя Гадионовки", d: "Вы всё видите, всё знаете, но молчите.", s: "https://ia801007.us.archive.org/28/items/ill-make-a-man-out-of-you/I%27ll%20Make%20a%20Man%20Out%20of%20You.mp3" },
-        { t: "Король Рандома", d: "Никто не знает, что вы скажете в следующую секунду.", s: "https://ia601006.us.archive.org/21/items/alice-in-wonderland-unbirthday/Unbirthday.mp3" },
-        { t: "Сверхзвуковой Лентяй", d: "Вы умудряетесь ничего не делать быстро.", s: "https://ia803403.us.archive.org/21/items/heigh-ho/Heigh-Ho.mp3" },
-        { t: "Амбассадор Чая и Печенек", d: "Любая проблема решается перекусом.", s: "https://ia801005.us.archive.org/22/items/beauty-and-the-beast_202104/Beauty%20and%20the%20Beast.mp3" },
-        { t: "Генератор Кринжа", d: "Ваши шутки настолько плохи, что они гениальны.", s: "https://ia803403.us.archive.org/22/items/zero-to-hero/Zero%20to%20Hero.mp3" },
-        { t: "Цифровой Философ", d: "Вы ищете смысл жизни в уведомлениях.", s: "https://ia801006.us.archive.org/32/items/circle-of-life/Circle%20of%20Life.mp3" },
-        { t: "Верховный Хранитель Секретов", d: "Вам можно доверить всё. Вы надежны.", s: "https://ia803402.us.archive.org/23/items/can-you-feel-the-love-tonight/Can%20You%20Feel%20The%20Love%20Tonight.mp3" },
-        { t: "Повелитель Дедлайнов", d: "Адреналин — ваш главный завтрак.", s: "https://ia803402.us.archive.org/23/items/go-the-distance/Go%20the%20Distance.mp3" },
-        { t: "Легенда Ночного Жора", d: "Холодильник — ваш лучший друг.", s: "https://ia601005.us.archive.org/20/items/be-our-guest/Be%20Our%20Guest.mp3" },
-        { t: "Мистер Позитив", d: "Вы подозрительно оптимистичны.", s: "https://ia803405.us.archive.org/34/items/youve-got-a-friend-in-me/You%27ve%20Got%20a%20Friend%20in%20Me.mp3" },
-        { t: "Маг Социальных Сетей", d: "Ваш телефон — продолжение вашей руки.", s: "https://ia801006.us.archive.org/22/items/a-whole-new-world/A%20Whole%20New%20World.mp3" },
-        { t: "Космический Путешественник", d: "Часто витаете в облаках. Там красиво.", s: "https://ia801006.us.archive.org/32/items/circle-of-life/Circle%20of%20Life.mp3" },
-        { t: "Главный По Тарелочкам", d: "Вы всегда знаете, где самая вкусная еда.", s: "https://ia800702.us.archive.org/1/items/the-bare-necessities/The%20Bare%20Necessities.mp3" },
-        { t: "Интроверт-Экстремал", d: "Вы любите людей на расстоянии.", s: "https://ia601006.us.archive.org/1/items/let-it-go_202104/Let%20It%20Go.mp3" },
-        { t: "Техно-Шаман", d: "Вы умеете договариваться с техникой.", s: "https://ia801007.us.archive.org/28/items/ill-make-a-man-out-of-you/I%27ll%20Make%20a%20Man%20Out%20of%20You.mp3" },
-        { t: "Мистический Соня", d: "Ваши сны интереснее, чем фильмы.", s: "https://ia601006.us.archive.org/21/items/alice-in-wonderland-unbirthday/Unbirthday.mp3" },
-        { t: "Мастер Переобувания", d: "Меняете мнение за секунду, но аргументированно.", s: "https://ia803402.us.archive.org/23/items/go-the-distance/Go%20the%20Distance.mp3" },
-        { t: "Охотник за Акциями", d: "Вы знаете, где скидки и бесплатная еда.", s: "https://ia803403.us.archive.org/21/items/heigh-ho/Heigh-Ho.mp3" },
-        { t: "Душа Гадионовки", d: "Без вас этот чат был бы просто буквами.", s: "https://ia801309.us.archive.org/28/items/lion-king-hakuna-matata/Lion%20King%20-%20Hakuna%20Matata.mp3" },
-        { t: "Скрытый Миллионер", d: "Вы выглядите скромно, но в душе золото.", s: "https://ia803403.us.archive.org/22/items/zero-to-hero/Zero%20to%20Hero.mp3" },
-        { t: "Пророк Переписок", d: "Вы печатаете ответ еще до вопроса.", s: "https://ia801004.us.archive.org/32/items/friend-like-me/Friend%20Like%20Me.mp3" },
-        { t: "Детектив Мемов", d: "Можете найти оригинал любого видео за миг.", s: "https://archive.org/download/TVThemeSongsTVThemesChipnDaleRescueRangers/TV%20THEMES%20-%20Disney%27s%20-%20Chip%20%27n%20Dale%27s%20Rescue%20Rangers%20%2880%27s%20Cartoon%29%20%7BSHORT%20EDIT%20FOR%20TV%7D.mp3" },
-        { t: "Ультра-Миротворец", d: "Разруливаете любые конфликты одной фразой.", s: "https://ia801005.us.archive.org/22/items/beauty-and-the-beast_202104/Beauty%20and%20the%20Beast.mp3" },
-        { t: "Вечный Студент", d: "Вы каждый день узнаете новое (и забываете).", s: "https://ia801004.us.archive.org/21/items/under-the-sea_202103/Under%20the%20Sea.mp3" },
-        { t: "Анархист-Одуванчик", d: "Выглядите мило, но готовы захватить мир.", s: "https://archive.org/download/TVThemeSongsTVThemesChipnDaleRescueRangers/TV%20THEMES%20-%20Disney%27s%20-%20Chip%20%27n%20Dale%27s%20Rescue%20Rangers%20%2880%27s%20Cartoon%29%20%7BSHORT%20EDIT%20FOR%20TV%7D.mp3" }
+        { t: "Хронический Хохотун", d: "Вы смеетесь даже над несмешными шутками.", i: "https://i.pinimg.com/originals/1f/23/79/1f23793798544e6b2f6412e87c536440.jpg" }, // Тимон
+        { t: "Магистр Диванных Наук", d: "Вы достигли просветления, не вставая с кровати.", i: "https://images6.fanpop.com/image/photos/37300000/Baloo-the-jungle-book-37320493-500-500.jpg" }, // Балу
+        { t: "Меметический Барон", d: "Ваш мозг на 80% состоит из картинок с котами.", i: "https://vignette.wikia.nocookie.net/disney/images/e/e0/Genie_Aladdin.png/revision/latest?cb=20140508080644" }, // Джинн
+        { t: "Профессиональный Душнила (Любя)", d: "Вы знаете, как правильно, и не боитесь это сказать.", i: "https://vignette.wikia.nocookie.net/disney/images/2/22/Sebastian-the-little-mermaid.jpg/revision/latest?cb=20140708035123" }, // Себастьян
+        { t: "Энергетический Вампир-Вегетарианец", d: "Вы питаетесь только позитивной энергией.", i: "https://vignette.wikia.nocookie.net/disney/images/d/d3/Olaf_Frozen.png/revision/latest?cb=20131109151528" }, // Олаф
+        { t: "Ниндзя Гадионовки", d: "Вы всё видите, всё знаете, но молчите.", i: "https://vignette.wikia.nocookie.net/disney/images/c/c5/Mulan_Disney_Princess.png/revision/latest?cb=20131109133856" }, // Мулан
+        { t: "Король Рандома", d: "Никто не знает, что вы скажете в следующую секунду.", i: "https://vignette.wikia.nocookie.net/disney/images/7/7b/Mad-hatter-disney.jpg/revision/latest?cb=20140228062948" }, // Шляпник
+        { t: "Сверхзвуковой Лентяй", d: "Вы умудряетесь ничего не делать быстро.", i: "https://vignette.wikia.nocookie.net/disney/images/b/b3/Flash_Zootopia.png/revision/latest?cb=20151125211246" }, // Блиц
+        { t: "Амбассадор Чая и Печенек", d: "Любая проблема решается перекусом.", i: "https://vignette.wikia.nocookie.net/disney/images/8/8b/Belle_Disney_Princess.png/revision/latest?cb=20131109133644" }, // Белль
+        { t: "Генератор Кринжа (Высший уровень)", d: "Ваши шутки настолько плохи, что они гениальны.", i: "https://vignette.wikia.nocookie.net/disney/images/8/82/Goofy_transparent.png/revision/latest?cb=20131124193554" }, // Гуфи
+        { t: "Цифровой Философ", d: "Вы ищете смысл жизни в уведомлениях.", i: "https://vignette.wikia.nocookie.net/disney/images/7/76/Wall-e-profile.png/revision/latest?cb=20131110190132" }, // Валл-и
+        { t: "Верховный Хранитель Секретов", d: "Вам можно доверить всё. Вы надежны.", i: "https://vignette.wikia.nocookie.net/disney/images/6/67/Rafiki-The-Lion-King.png/revision/latest?cb=20131109142858" }, // Рафики
+        { t: "Повелитель Дедлайнов", d: "Адреналин — ваш главный завтрак.", i: "https://vignette.wikia.nocookie.net/disney/images/c/c4/White_Rabbit.png/revision/latest?cb=20131221142517" }, // Кролик
+        { t: "Легенда Ночного Жора", d: "Холодильник — ваш лучший друг.", i: "https://vignette.wikia.nocookie.net/disney/images/1/1a/Pumbaa_The_Lion_King.png/revision/latest?cb=20131109142928" }, // Пумба
+        { t: "Мистер Позитив", d: "Вы подозрительно оптимистичны.", i: "https://vignette.wikia.nocookie.net/disney/images/9/99/Mickey_Mouse_Disney.png/revision/latest?cb=20131109151120" }, // Микки
+        { t: "Маг Социальных Сетей", d: "Ваш телефон — продолжение вашей руки.", i: "https://vignette.wikia.nocookie.net/disney/images/6/65/Rapunzel_Disney_Princess.png/revision/latest?cb=20131109133917" }, // Рапунцель
+        { t: "Космический Путешественник", d: "Часто витаете в облаках. Там красиво.", i: "https://vignette.wikia.nocookie.net/disney/images/7/74/Buzz-lightyear-toy-story.png/revision/latest?cb=20131110200845" }, // Базз
+        { t: "Главный По Тарелочкам", d: "Вы всегда знаете, где самая вкусная еда.", i: "https://vignette.wikia.nocookie.net/disney/images/a/a8/Remy_Ratatouille.png/revision/latest?cb=20131110185918" }, // Реми
+        { t: "Интроверт-Экстремал", d: "Вы любите людей на расстоянии.", i: "https://vignette.wikia.nocookie.net/disney/images/4/4e/Quasimodo-hunchback-of-notre-dame.jpg/revision/latest?cb=20140508081628" }, // Квазимодо
+        { t: "Техно-Шаман", d: "Вы умеете договариваться с техникой.", i: "https://vignette.wikia.nocookie.net/disney/images/5/51/Stitch_Disney.png/revision/latest?cb=20131109151558" }, // Стич
+        { t: "Мистический Соня", d: "Ваши сны интереснее, чем реальность.", i: "https://vignette.wikia.nocookie.net/disney/images/1/1d/Aurora_Disney_Princess.png/revision/latest?cb=20131109133703" }, // Аврора
+        { t: "Мастер Переобувания", d: "Гений дипломатии и смены мнений.", i: "https://vignette.wikia.nocookie.net/disney/images/4/4c/Kuzco-emperors-new-groove.jpg/revision/latest?cb=20140708035548" }, // Кузко
+        { t: "Охотник за Акциями", d: "Вы знаете, где скидки и бесплатная еда.", i: "https://vignette.wikia.nocookie.net/disney/images/5/54/Scrooge_McDuck.png/revision/latest?cb=20131109151624" }, // Скрудж
+        { t: "Душа Гадионовки", d: "Без вас этот чат был бы просто буквами.", i: "https://vignette.wikia.nocookie.net/disney/images/b/bc/Simba_The_Lion_King.png/revision/latest?cb=20131109142838" }, // Симба
+        { t: "Скрытый Миллионер", d: "Вы выглядите скромно, но в душе золото.", i: "https://vignette.wikia.nocookie.net/disney/images/9/9b/Robin_Hood_Disney.jpg/revision/latest?cb=20140708035612" }, // Робин Гуд
+        { t: "Пророк Переписок", d: "Вы печатаете ответ еще до вопроса.", i: "https://vignette.wikia.nocookie.net/disney/images/e/e0/Alice_Alice_in_Wonderland.png/revision/latest?cb=20131109150044" }, // Алиса
+        { t: "Детектив Мемов", d: "Можете найти оригинал любого видео за миг.", i: "https://vignette.wikia.nocookie.net/disney/images/d/df/Gadget_Hackwrench.png/revision/latest?cb=20131109150022" }, // Гаечка
+        { t: "Ультра-Миротворец", d: "Разруливаете конфликты одной фразой.", i: "https://vignette.wikia.nocookie.net/disney/images/5/5c/Pocahontas_Disney_Princess.png/revision/latest?cb=20131109133842" }, // Покахонтас
+        { t: "Вечный Студент", d: "Вы каждый день узнаете новое (и забываете).", i: "https://vignette.wikia.nocookie.net/disney/images/7/7e/Milo_Thatch.png/revision/latest?cb=20131109150106" }, // Майло Тич
+        { t: "Анархист-Одуванчик", d: "Выглядите мило, но готовы захватить мир.", i: "https://vignette.wikia.nocookie.net/disney/images/2/23/Donald_Duck_Disney.png/revision/latest?cb=20131109151052" } // Дональд
     ];
 
     function startQuiz() {
@@ -200,7 +213,7 @@
 
             document.getElementById('diag-title').innerText = res.t;
             document.getElementById('diag-desc').innerText = res.d;
-            finalUrl = res.s;
+            finalImg = res.i;
             return;
         }
 
@@ -218,30 +231,16 @@
         });
     }
 
-    function toggleMusic() {
-        if (!isPlaying) {
-            // Прямое действие по клику - это РЕШАЕТ проблему воспроизведения
-            audio.src = finalUrl;
-            audio.volume = 0.5;
-            
-            audio.play().then(() => {
-                musicBtn.innerText = "Остановить музыку";
-                isPlaying = true;
-            }).catch(e => {
-                // Если не вышло с первого раза, пробуем подгрузить
-                console.log("Retry playback...");
-                audio.load();
-                musicBtn.innerText = "Нажми еще раз (играем!)";
-            });
-        } else {
-            audio.pause();
-            audio.currentTime = 0;
-            musicBtn.innerText = "Эта песня подходит к вашему диагнозу";
-            isPlaying = false;
-        }
+    function revealCharacter() {
+        const btn = document.getElementById('showCharBtn');
+        const imgCont = document.getElementById('char-image-container');
+        const imgTag = document.getElementById('char-img');
+
+        btn.style.display = 'none'; // Убираем кнопку
+        imgTag.src = finalImg; // Ставим картинку
+        imgCont.style.display = 'block'; // Показываем картинку
     }
 
-    // Запуск гарантирован
     window.onload = startQuiz;
 </script>
 </body>
