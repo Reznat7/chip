@@ -12,6 +12,7 @@
             --text: #ffffff;
         }
 
+        /* Индикатор версии 3 */
         .ver-indicator {
             position: absolute;
             top: 10px;
@@ -48,6 +49,7 @@
         h1 { color: var(--primary); margin-bottom: 10px; }
         .progress { font-size: 0.9em; color: #888; margin-bottom: 20px; }
         
+        /* ВОПРОСЫ КРАСНОГО ЦВЕТА */
         .question { 
             font-size: 1.2em; 
             margin-bottom: 25px; 
@@ -75,6 +77,7 @@
         .diagnosis-title { color: var(--primary); font-size: 1.8em; margin-top: 15px; font-weight: bold; }
         .description { font-style: italic; margin: 20px 0; line-height: 1.6; color: #ccc; }
         
+        /* АНИМИРОВАННАЯ КНОПКА МУЗЫКИ */
         .music-btn {
             background-color: #222;
             border: 3px solid;
@@ -86,7 +89,6 @@
             width: 100%;
             margin: 20px 0;
             animation: rainbow-anim 3s infinite linear;
-            display: block;
         }
 
         @keyframes rainbow-anim {
@@ -102,7 +104,7 @@
 <body>
 
 <div id="quiz-container">
-    <div class="ver-indicator">2</div>
+    <div class="ver-indicator">3</div>
     
     <div id="quiz-ui">
         <h1>Gadionovka 666</h1>
@@ -127,10 +129,11 @@
 </div>
 
 <script>
-    const audio = document.getElementById('audio-player');
-    const musicBtn = document.getElementById('musicBtn');
+    // Переменные
+    let currentStep = 0;
+    let totalScore = 0;
     let isPlaying = false;
-    let currentSongUrl = "";
+    let finalSongUrl = "";
 
     const questions = [
         { q: "Как ты заходишь в чат Gadionovka 666?", a: ["С ноги и мемом", "Тихо читаю, что вы тут настрочили", "Сразу кидаю кружочек"] },
@@ -179,22 +182,31 @@
     ];
 
     function showQuestion() {
+        const qText = document.getElementById('question-text');
+        const oCont = document.getElementById('options-container');
+        const prog = document.getElementById('progress');
+
+        if (!qText || !oCont) return;
+
         const q = questions[currentStep];
-        document.getElementById('progress').innerText = `Вопрос ${currentStep + 1} из 10`;
-        document.getElementById('question-text').innerText = q.q;
-        const oC = document.getElementById('options-container');
-        oC.innerHTML = '';
+        prog.innerText = "Вопрос " + (currentStep + 1) + " из 10";
+        qText.innerText = q.q;
+        oCont.innerHTML = '';
         
         q.a.forEach((ans, i) => {
             const b = document.createElement('button');
             b.className = 'opt-btn';
             b.innerText = ans;
-            b.onclick = () => {
+            b.onclick = function() {
                 totalScore += i;
                 currentStep++;
-                if (currentStep < 10) { showQuestion(); } else { showResult(); }
+                if (currentStep < 10) { 
+                    showQuestion(); 
+                } else { 
+                    showResult(); 
+                }
             };
-            oC.appendChild(b);
+            oCont.appendChild(b);
         });
     }
 
@@ -203,34 +215,41 @@
         document.getElementById('result').style.display = 'block';
         
         let idx = Math.floor((totalScore / 20) * 29);
+        if (idx > 29) idx = 29;
         const res = diagnoses[idx];
 
         document.getElementById('diag-title').innerText = res.t;
         document.getElementById('diag-desc').innerText = res.d;
         
-        currentSongUrl = res.s; // Запоминаем ссылку
+        // Ссылка на музыку
+        finalSongUrl = res.s;
     }
 
     function toggleMusic() {
-        if (!audio.src || audio.src !== currentSongUrl) {
-            audio.src = currentSongUrl;
-            audio.volume = 0.5;
-        }
+        const audioObj = document.getElementById('audio-player');
+        const mBtn = document.getElementById('musicBtn');
 
-        if (isPlaying) {
-            audio.pause();
-            musicBtn.innerText = "Эта песня подходит к вашему диагнозу";
-        } else {
-            audio.play().then(() => {
-                musicBtn.innerText = "Остановить музыку";
-            }).catch(err => {
-                console.error("Ошибка:", err);
+        if (!isPlaying) {
+            audioObj.src = finalSongUrl;
+            audioObj.volume = 0.5;
+            audioObj.play().then(() => {
+                isPlaying = true;
+                mBtn.innerText = "Остановить музыку";
+            }).catch(e => {
+                console.log("Ошибка воспроизведения. Попробуй еще раз.");
             });
+        } else {
+            audioObj.pause();
+            audioObj.currentTime = 0;
+            isPlaying = false;
+            mBtn.innerText = "Эта песня подходит к вашему диагнозу";
         }
-        isPlaying = !isPlaying;
     }
 
-    showQuestion();
+    // Запуск при загрузке страницы
+    window.onload = function() {
+        showQuestion();
+    };
 </script>
 
 </body>
