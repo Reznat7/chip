@@ -12,7 +12,6 @@
             --text: #ffffff;
         }
 
-        /* Индикатор версии 7 */
         .ver-indicator {
             position: absolute;
             top: 10px;
@@ -20,8 +19,8 @@
             transform: translateX(-50%);
             color: var(--primary);
             font-weight: bold;
-            font-size: 1.4em;
-            z-index: 10;
+            font-size: 1.5em;
+            z-index: 999;
         }
 
         body {
@@ -41,7 +40,7 @@
             padding: 30px;
             border-radius: 20px;
             box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-            max-width: 600px;
+            max-width: 550px;
             width: 100%;
             text-align: center;
             position: relative;
@@ -52,7 +51,7 @@
         .progress { font-size: 0.9em; color: #888; margin-bottom: 20px; }
         
         .question { 
-            font-size: 1.25em; 
+            font-size: 1.3em; 
             margin-bottom: 25px; 
             min-height: 60px; 
             color: var(--primary); 
@@ -75,14 +74,14 @@
         button.opt-btn:hover { background-color: #444; border-color: var(--primary); }
 
         #result { display: none; }
-        .diagnosis-title { color: var(--primary); font-size: 2.1em; margin-top: 15px; font-weight: bold; }
+        .diagnosis-title { color: var(--primary); font-size: 2em; margin-top: 15px; font-weight: bold; }
         .description { font-style: italic; margin: 20px 0; line-height: 1.6; color: #ddd; font-size: 1.1em; }
         
         .music-btn {
             background-color: #222;
             border: 4px solid;
             padding: 22px;
-            font-size: 1.15em;
+            font-size: 1.1em;
             font-weight: bold;
             border-radius: 60px;
             cursor: pointer;
@@ -91,6 +90,7 @@
             animation: rainbow-anim 3s infinite linear;
             display: block;
             color: white;
+            outline: none;
         }
 
         @keyframes rainbow-anim {
@@ -106,7 +106,7 @@
 <body>
 
 <div id="quiz-container">
-    <div class="ver-indicator">7</div>
+    <div class="ver-indicator">8</div>
     
     <div id="quiz-ui">
         <h1>Gadionovka 666</h1>
@@ -124,20 +124,20 @@
             Эта песня подходит к вашему диагнозу
         </button>
 
-        <audio id="themeSong" preload="auto"></audio>
+        <audio id="themeSong"></audio>
 
         <button class="restart-btn" onclick="location.reload()">Пройти еще раз</button>
     </div>
 </div>
 
 <script>
-    const audio = document.getElementById('themeSong');
-    const musicBtn = document.getElementById('musicBtn');
-    
     let currentStep = 0;
     let totalScore = 0;
     let isPlaying = false;
     let finalUrl = "";
+
+    const audio = document.getElementById('themeSong');
+    const musicBtn = document.getElementById('musicBtn');
 
     const questions = [
         { q: "Как ты заходишь в чат Gadionovka 666?", a: ["С ноги и мемом", "Тихо читаю", "Сразу кружочек"] },
@@ -191,7 +191,16 @@
         const prog = document.getElementById('progress');
 
         if (currentStep >= 10) {
-            showResult();
+            document.getElementById('quiz-ui').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+            
+            let idx = Math.floor((totalScore / 20) * 29);
+            if (idx > 29) idx = 29;
+            const res = diagnoses[idx];
+
+            document.getElementById('diag-title').innerText = res.t;
+            document.getElementById('diag-desc').innerText = res.d;
+            finalUrl = res.s;
             return;
         }
 
@@ -209,40 +218,31 @@
         });
     }
 
-    function showResult() {
-        document.getElementById('quiz-ui').style.display = 'none';
-        document.getElementById('result').style.display = 'block';
-        
-        let idx = Math.floor((totalScore / 20) * 29);
-        if (idx > 29) idx = 29;
-        const res = diagnoses[idx];
-
-        document.getElementById('diag-title').innerText = res.t;
-        document.getElementById('diag-desc').innerText = res.d;
-        
-        finalUrl = res.s;
-        audio.src = finalUrl;
-        audio.load();
-    }
-
     function toggleMusic() {
-        if (isPlaying) {
-            audio.pause();
-            audio.currentTime = 0;
-            musicBtn.innerText = "Эта песня подходит к вашему диагнозу";
-            isPlaying = false;
-        } else {
+        if (!isPlaying) {
+            // Прямое действие по клику - это РЕШАЕТ проблему воспроизведения
+            audio.src = finalUrl;
+            audio.volume = 0.5;
+            
             audio.play().then(() => {
                 musicBtn.innerText = "Остановить музыку";
                 isPlaying = true;
             }).catch(e => {
-                musicBtn.innerText = "Ошибка: нажмите еще раз 😢";
-                isPlaying = false;
+                // Если не вышло с первого раза, пробуем подгрузить
+                console.log("Retry playback...");
+                audio.load();
+                musicBtn.innerText = "Нажми еще раз (играем!)";
             });
+        } else {
+            audio.pause();
+            audio.currentTime = 0;
+            musicBtn.innerText = "Эта песня подходит к вашему диагнозу";
+            isPlaying = false;
         }
     }
 
-    startQuiz();
+    // Запуск гарантирован
+    window.onload = startQuiz;
 </script>
 </body>
 </html>
