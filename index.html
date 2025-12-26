@@ -41,7 +41,7 @@
         .light:nth-child(4n+3) { background: #0066ff; color: #0066ff; }
         .light:nth-child(4n+4) { background: #ffff00; color: #ffff00; }
 
-        /* ОБНОВЛЕННЫЙ ЗАГОЛОВОК (КАК НА СКРИНШОТЕ) */
+        /* ЗАГОЛОВОК */
         h1.main-title { 
             font-family: 'Creepster', cursive; 
             color: #FFD700; 
@@ -56,18 +56,51 @@
             position: relative;
         }
 
-        /* --- КНОПКИ ГЛАВНЫЕ --- */
+        /* --- КНОПКИ --- */
         .main-btns-container { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; z-index: 100; margin-bottom: 20px; }
         .btn-base { cursor: pointer; transition: 0.3s; text-transform: uppercase; font-weight: 900; border: none; font-family: 'Orbitron', sans-serif; }
-        
-        .btn-toggle { background-color: #000; color: #fff; font-size: 24px; padding: 15px 45px; border: 4px solid #00f2ff; box-shadow: 0 0 15px #00f2ff; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); width: auto; margin: 0 auto 20px; display: block;}
         
         .btn-test { background: var(--primary); color: white; font-size: 22px; padding: 15px 40px; border-radius: 60px; box-shadow: 0 0 25px var(--primary); animation: pulseBtn 1.5s infinite; }
         .btn-chill { background: var(--chill); color: #000; font-size: 22px; padding: 15px 40px; border-radius: 60px; box-shadow: 0 0 25px var(--chill); display: flex; align-items: center; gap: 15px; }
         .btn-chill span { display: inline-block; animation: carDrive 0.5s infinite linear; font-size: 1.6em; }
-
         @keyframes carDrive { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
         @keyframes pulseBtn { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+
+        /* --- РАМКА ИЗ ГИРЛЯНД ДЛЯ НИЖНИХ КНОПОК --- */
+        .garland-border-container {
+            position: relative;
+            padding: 15px;
+            border: 6px dashed #444;
+            border-image: linear-gradient(45deg, #ff0000, #00ff00, #0066ff, #ffff00) 1;
+            animation: borderBlink 2s infinite alternate;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            z-index: 100;
+            background: rgba(0,0,0,0.3);
+        }
+        @keyframes borderBlink {
+            0% { border-image-source: linear-gradient(45deg, #ff0000, #00ff00, #0066ff, #ffff00); box-shadow: 0 0 10px #fff; }
+            100% { border-image-source: linear-gradient(45deg, #ffff00, #ff0000, #00ff00, #0066ff); box-shadow: 0 0 20px #fff; }
+        }
+
+        /* КНОПКА ЖМЯК (внутри рамки) */
+        .btn-toggle { background-color: #000; color: #fff; font-size: 20px; padding: 15px 35px; border: 4px solid #00f2ff; box-shadow: 0 0 15px #00f2ff; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); width: auto; display: block;}
+
+        /* НОВАЯ ЗЕЛЕНАЯ КНОПКА (внутри рамки) */
+        .btn-index {
+            font-family: 'Creepster', cursive; /* Стиль с картинки */
+            background: linear-gradient(to bottom, #7fff00, #32cd32);
+            color: #006400;
+            font-size: 24px;
+            padding: 15px 40px;
+            border: 4px solid #004d00;
+            border-radius: 10px;
+            text-shadow: 2px 2px 4px #000;
+            box-shadow: 0 0 15px #32cd32, inset 0 0 10px #00ff00;
+        }
+        .btn-index:hover { background: linear-gradient(to bottom, #32cd32, #006400); color: #7fff00; box-shadow: 0 0 25px #32cd32; }
 
         /* --- КОНТЕЙНЕР ТЕСТА --- */
         #test-overlay { display: none; position: fixed; bottom: 0; left: 0; width: 100%; height: 50vh; z-index: 2000; justify-content: center; align-items: flex-end; }
@@ -103,8 +136,7 @@
             text-shadow: 0 0 20px #000;
             margin-bottom: 30px;
         }
-        #chill-msg span { color: #ff0000; } /* BEGIN и НАЧИНАТЬ красным */
-
+        #chill-msg span { color: #ff0000; }
         .btn-overlay-chill {
             cursor: pointer;
             text-transform: uppercase;
@@ -116,10 +148,8 @@
             animation: pulseClose 2s infinite ease-in-out;
             font-size: 1.2em;
         }
-
         .btn-cancel-chill { background: #222; border: 4px solid var(--primary); color: var(--primary); }
         .btn-skip-chill { background: #222; border: 4px solid #28a745; color: #28a745; }
-
         @keyframes pulseCountdown { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
     </style>
 </head>
@@ -136,7 +166,12 @@
         <button class="btn-base btn-chill" onclick="startChill()">ПОКАТАТЬСЯ НА ЧИЛЕ <span>🚙</span></button>
     </div>
     
-    <button class="btn-base btn-toggle" onclick="toggleGarland()">ЖМЯК</button>
+    <div class="garland-border-container">
+        <button class="btn-base btn-toggle" onclick="toggleGarland()">ЖМЯК</button>
+        <a href="index.html" style="text-decoration: none;">
+             <button class="btn-base btn-index">ПЕРВАЯ СТРАНИЦА</button>
+        </a>
+    </div>
 
     <div id="chill-overlay">
         <div id="chill-counter">7</div>
