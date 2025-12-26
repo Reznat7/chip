@@ -77,13 +77,14 @@
             width: 100%;
             margin: 20px 0;
             animation: rainbow-anim 3s infinite linear;
+            outline: none;
         }
 
         @keyframes rainbow-anim {
-            0% { border-color: #ff4d4d; color: #ff4d4d; }
-            33% { border-color: #4dff88; color: #4dff88; }
-            66% { border-color: #4d94ff; color: #4d94ff; }
-            100% { border-color: #ff4d4d; color: #ff4d4d; }
+            0% { border-color: #ff4d4d; color: #ff4d4d; box-shadow: 0 0 10px #ff4d4d; }
+            33% { border-color: #4dff88; color: #4dff88; box-shadow: 0 0 10px #4dff88; }
+            66% { border-color: #4d94ff; color: #4d94ff; box-shadow: 0 0 10px #4d94ff; }
+            100% { border-color: #ff4d4d; color: #ff4d4d; box-shadow: 0 0 10px #ff4d4d; }
         }
 
         .restart-btn { background: none; border: 1px solid var(--primary); color: var(--primary); margin-top: 20px; }
@@ -108,7 +109,7 @@
             Эта песня подходит к вашему диагнозу
         </button>
 
-        <audio id="audio-player"></audio>
+        <audio id="audio-player" preload="auto"></audio>
 
         <button class="restart-btn" onclick="location.reload()">Пройти еще раз</button>
     </div>
@@ -122,47 +123,48 @@
     const questions = [
         { q: "Как ты заходишь в чат Gadionovka 666?", a: ["С ноги и мемом", "Тихо читаю, что вы тут настрочили", "Сразу кидаю кружочек"] },
         { q: "Твое идеальное состояние в субботу вечером:", a: ["Горизонтальное", "Турбо-режим", "Не помню, было весело"] },
-        { q: "Что ты сделаешь, если увидишь привидение?", a: ["Предложу вступить в чат", "Спрошу, есть ли у него подписка на Плюс", "Убегу, роняя тапки"] },
+        { q: "Что ты сделаешь, если увидишь привидение?", a: ["Предложу вступить в чат", "Спрошу про подписку на Плюс", "Убегу, роняя тапки"] },
         { q: "Твой главный талант — это...", a: ["Сон 12 часов подряд", "Генерация странных идей", "Умение вовремя промолчать"] },
-        { q: "Любимая еда для посиделок?", a: ["Что-то острое, как шутки админа", "Пицца — классика", "Энергетик и надежда на лучшее"] },
+        { q: "Любимая еда для посиделок?", a: ["Что-то острое, как шутки админа", "Пицца — классика", "Энергетик и надежда"] },
         { q: "Твой уровень стресса сейчас:", a: ["Спокоен как капибара", "Нервный тик левого глаза", "Я и есть стресс"] },
         { q: "Если бы ты был животным, то каким?", a: ["Ленивцем-интеллектуалом", "Енотом-полоскуном", "Кот-арбуз"] },
-        { q: "Твое отношение к дедлайнам:", a: ["Дедлайн? Не, не слышал", "Бегу за ними, но они быстрее", "Побеждаю в последнюю секунду"] },
+        { q: "Твое отношение к дедлайнам:", a: ["Дедлайн? Не, не слышал", "Бегу за ними", "Побеждаю в последнюю секунду"] },
         { q: "Что ты выберешь?", a: ["Миллион долларов", "Способность летать", "Чтобы в Гадионовке всегда был актив"] },
         { q: "Твой девиз по жизни:", a: ["Главное — не участие, а обед", "Слабоумие и отвага!", "Нормально делай — нормально будет"] }
     ];
 
+    // Прямые работающие ссылки из открытых архивов
     const diagnoses = [
-        { t: "Хронический Хохотун", d: "Вы смеетесь даже над несмешными шутками. Ваша аура исцеляет грусть.", s: "https://archive.org/download/lion-king-hakuna-matata/Lion%20King%20-%20Hakuna%20Matata.mp3" },
-        { t: "Магистр Диванных Наук", d: "Вы достигли просветления, не вставая с кровати.", s: "https://archive.org/download/the-bare-necessities/The%20Bare%20Necessities.mp3" },
-        { t: "Меметический Барон", d: "Ваш мозг на 80% состоит из картинок с котами.", s: "https://archive.org/download/friend-like-me/Friend%20Like%20Me.mp3" },
-        { t: "Профессиональный Душнила (Любя)", d: "Вы знаете, как правильно, и не боитесь об этом сказать.", s: "https://archive.org/download/tvtunes_29015/Chip%20%27n%20Dale%20Rescue%20Rangers.mp3" },
-        { t: "Энергетический Вампир-Вегетарианец", d: "Вы питаетесь только позитивной энергией.", s: "https://archive.org/download/under-the-sea_202103/Under%20the%20Sea.mp3" },
-        { t: "Ниндзя Гадионовки", d: "Вы всё видите, всё знаете, но молчите. Появляетесь внезапно.", s: "https://archive.org/download/ill-make-a-man-out-of-you/I%27ll%20Make%20a%20Man%20Out%20of%20You.mp3" },
-        { t: "Король Рандома", d: "Никто не знает, что вы скажете в следующую секунду. Даже вы сами.", s: "https://archive.org/download/alice-in-wonderland-unbirthday/Unbirthday.mp3" },
-        { t: "Сверхзвуковой Лентяй", d: "Вы умудряетесь ничего не делать с невероятной скоростью.", s: "https://archive.org/download/heigh-ho/Heigh-Ho.mp3" },
-        { t: "Амбассадор Чая и Печенек", d: "Любая проблема решается для вас перекусом.", s: "https://archive.org/download/beauty-and-the-beast_202104/Beauty%20and%20the%20Beast.mp3" },
-        { t: "Генератор Кринжа (Высший уровень)", d: "Ваши шутки настолько плохи, что они гениальны.", s: "https://archive.org/download/zero-to-hero/Zero%20to%20Hero.mp3" },
-        { t: "Цифровой Философ", d: "Вы ищете смысл жизни в уведомлениях и паролях от Wi-Fi.", s: "https://archive.org/download/circle-of-life/Circle%20of%20Life.mp3" },
-        { t: "Верховный Хранитель Секретов", d: "Вам можно доверить всё. Вы надежны, как швейцарские часы.", s: "https://archive.org/download/can-you-feel-the-love-tonight/Can%20You%20Feel%20The%20Love%20Tonight.mp3" },
-        { t: "Повелитель Дедлайнов", d: "Вы живете на грани. Адреналин — ваш главный завтрак.", s: "https://archive.org/download/go-the-distance/Go%20the%20Distance.mp3" },
-        { t: "Легенда Ночного Жора", d: "Холодильник — ваш лучший друг после полуночи.", s: "https://archive.org/download/be-our-guest/Be%20Our%20Guest.mp3" },
-        { t: "Мистер Позитив", d: "Вы настолько оптимистичны, что это подозрительно.", s: "https://archive.org/download/youve-got-a-friend-in-me/You%27ve%20Got%20a%20Friend%20in%20Me.mp3" },
-        { t: "Маг Социальных Сетей", d: "Ваш телефон — продолжение вашей руки.", s: "https://archive.org/download/a-whole-new-world/A%20Whole%20New%20World.mp3" },
-        { t: "Космический Путешественник", d: "Часто витаете в облаках. Там красиво, мы понимаем.", s: "https://archive.org/download/disney-songs/Circle%20Of%20Life.mp3" },
-        { t: "Главный По Тарелочкам", d: "Вы всегда знаете, где самая вкусная еда.", s: "https://archive.org/download/the-bare-necessities/The%20Bare%20Necessities.mp3" },
-        { t: "Интроверт-Экстремал", d: "Вы любите людей, но на большом расстоянии.", s: "https://archive.org/download/let-it-go_202104/Let%20It%20Go.mp3" },
-        { t: "Техно-Шаман", d: "Вы умеете договариваться с техникой силой мысли.", s: "https://archive.org/download/ill-make-a-man-out-of-you/I%27ll%20Make%20a%20Man%20Out%20of%20You.mp3" },
-        { t: "Мистический Соня", d: "Ваши сны интереснее, чем большинство фильмов.", s: "https://archive.org/download/alice-in-wonderland-unbirthday/Unbirthday.mp3" },
-        { t: "Мастер Переобувания", d: "Меняете мнение за секунду, но всегда аргументированно.", s: "https://archive.org/download/go-the-distance/Go%20the%20Distance.mp3" },
-        { t: "Охотник за Акциями", d: "Вы знаете, где скидки, кэшбэк и бесплатная еда.", s: "https://archive.org/download/heigh-ho/Heigh-Ho.mp3" },
-        { t: "Душа Гадионовки", d: "Без вас этот чат был бы просто набором букв.", s: "https://archive.org/download/lion-king-hakuna-matata/Lion%20King%20-%20Hakuna%20Matata.mp3" },
-        { t: "Скрытый Миллионер", d: "Вы выглядите скромно, но в душе у вас золотые горы.", s: "https://archive.org/download/zero-to-hero/Zero%20to%20Hero.mp3" },
-        { t: "Пророк Переписок", d: "Вы печатаете ответ еще до того, как вам задали вопрос.", s: "https://archive.org/download/friend-like-me/Friend%20Like%20Me.mp3" },
-        { t: "Детектив Мемов", d: "Можете найти оригинал любого видео за 2 секунды.", s: "https://archive.org/download/tvtunes_29015/Chip%20%27n%20Dale%20Rescue%20Rangers.mp3" },
-        { t: "Ультра-Миротворец", d: "Разруливаете любые конфликты одной фразой.", s: "https://archive.org/download/beauty-and-the-beast_202104/Beauty%20and%20the%20Beast.mp3" },
-        { t: "Вечный Студент", d: "Вы каждый день узнаете новое, но забываете зачем.", s: "https://archive.org/download/under-the-sea_202103/Under%20the%20Sea.mp3" },
-        { t: "Анархист-Одуванчик", d: "Выглядите мило, но готовы захватить мир.", s: "https://archive.org/download/TVThemeSongsTVThemesChipnDaleRescueRangers/TV%20THEMES%20-%20Disney%27s%20-%20Chip%20%27n%20Dale%27s%20Rescue%20Rangers%20%2880%27s%20Cartoon%29%20%7BSHORT%20EDIT%20FOR%20TV%7D.mp3" }
+        { t: "Хронический Хохотун", d: "Вы смеетесь даже над несмешными шутками. Ваша аура исцеляет грусть.", s: "https://ia801309.us.archive.org/28/items/lion-king-hakuna-matata/Lion%20King%20-%20Hakuna%20Matata.mp3" },
+        { t: "Магистр Диванных Наук", d: "Вы достигли просветления, не вставая с кровати.", s: "https://ia800702.us.archive.org/1/items/the-bare-necessities/The%20Bare%20Necessities.mp3" },
+        { t: "Меметический Барон", d: "Ваш мозг на 80% состоит из картинок с котами.", s: "https://ia801004.us.archive.org/32/items/friend-like-me/Friend%20Like%20Me.mp3" },
+        { t: "Профессиональный Душнила (Любя)", d: "Вы знаете, как правильно, и не боитесь об этом сказать.", s: "https://ia601308.us.archive.org/18/items/tvtunes_29015/Chip%20%27n%20Dale%20Rescue%20Rangers.mp3" },
+        { t: "Энергетический Вампир-Вегетарианец", d: "Вы питаетесь только позитивной энергией.", s: "https://ia801004.us.archive.org/21/items/under-the-sea_202103/Under%20the%20Sea.mp3" },
+        { t: "Ниндзя Гадионовки", d: "Вы всё видите, всё знаете, но молчите. Появляетесь внезапно.", s: "https://ia801007.us.archive.org/28/items/ill-make-a-man-out-of-you/I%27ll%20Make%20a%20Man%20Out%20of%20You.mp3" },
+        { t: "Король Рандома", d: "Никто не знает, что вы скажете в следующую секунду. Даже вы сами.", s: "https://ia601006.us.archive.org/21/items/alice-in-wonderland-unbirthday/Unbirthday.mp3" },
+        { t: "Сверхзвуковой Лентяй", d: "Вы умудряетесь ничего не делать с невероятной скоростью.", s: "https://ia803403.us.archive.org/21/items/heigh-ho/Heigh-Ho.mp3" },
+        { t: "Амбассадор Чая и Печенек", d: "Любая проблема решается для вас перекусом.", s: "https://ia801005.us.archive.org/22/items/beauty-and-the-beast_202104/Beauty%20and%20the%20Beast.mp3" },
+        { t: "Генератор Кринжа (Высший уровень)", d: "Ваши шутки настолько плохи, что они гениальны.", s: "https://ia803403.us.archive.org/22/items/zero-to-hero/Zero%20to%20Hero.mp3" },
+        { t: "Цифровой Философ", d: "Вы ищете смысл жизни в уведомлениях.", s: "https://ia801006.us.archive.org/32/items/circle-of-life/Circle%20of%20Life.mp3" },
+        { t: "Верховный Хранитель Секретов", d: "Вам можно доверить всё. Вы надежны, как швейцарские часы.", s: "https://ia803402.us.archive.org/23/items/can-you-feel-the-love-tonight/Can%20You%20Feel%20The%20Love%20Tonight.mp3" },
+        { t: "Повелитель Дедлайнов", d: "Вы живете на грани. Адреналин — ваш главный завтрак.", s: "https://ia803402.us.archive.org/23/items/go-the-distance/Go%20the%20Distance.mp3" },
+        { t: "Легенда Ночного Жора", d: "Холодильник — ваш лучший друг после полуночи.", s: "https://ia601005.us.archive.org/20/items/be-our-guest/Be%20Our%20Guest.mp3" },
+        { t: "Мистер Позитив", d: "Вы настолько оптимистичны, что это подозрительно.", s: "https://ia803405.us.archive.org/34/items/youve-got-a-friend-in-me/You%27ve%20Got%20a%20Friend%20in%20Me.mp3" },
+        { t: "Маг Социальных Сетей", d: "Ваш телефон — продолжение вашей руки.", s: "https://ia801006.us.archive.org/22/items/a-whole-new-world/A%20Whole%20New%20World.mp3" },
+        { t: "Космический Путешественник", d: "Часто витаете в облаках. Там красиво.", s: "https://ia801006.us.archive.org/32/items/circle-of-life/Circle%20of%20Life.mp3" },
+        { t: "Главный По Тарелочкам", d: "Вы всегда знаете, где самая вкусная еда.", s: "https://ia800702.us.archive.org/1/items/the-bare-necessities/The%20Bare%20Necessities.mp3" },
+        { t: "Интроверт-Экстремал", d: "Вы любите людей, но на большом расстоянии.", s: "https://ia601006.us.archive.org/1/items/let-it-go_202104/Let%20It%20Go.mp3" },
+        { t: "Техно-Шаман", d: "Вы умеете договариваться с техникой.", s: "https://ia801007.us.archive.org/28/items/ill-make-a-man-out-of-you/I%27ll%20Make%20a%20Man%20Out%20of%20You.mp3" },
+        { t: "Мистический Соня", d: "Ваши сны интереснее, чем большинство фильмов.", s: "https://ia601006.us.archive.org/21/items/alice-in-wonderland-unbirthday/Unbirthday.mp3" },
+        { t: "Мастер Переобувания", d: "Меняете мнение за секунду, но всегда аргументированно.", s: "https://ia803402.us.archive.org/23/items/go-the-distance/Go%20the%20Distance.mp3" },
+        { t: "Охотник за Акциями", d: "Вы знаете, где скидки и бесплатная еда.", s: "https://ia803403.us.archive.org/21/items/heigh-ho/Heigh-Ho.mp3" },
+        { t: "Душа Гадионовки", d: "Без вас этот чат был бы просто набором букв.", s: "https://ia801309.us.archive.org/28/items/lion-king-hakuna-matata/Lion%20King%20-%20Hakuna%20Matata.mp3" },
+        { t: "Скрытый Миллионер", d: "Вы выглядите скромно, но в душе у вас золотые горы.", s: "https://ia803403.us.archive.org/22/items/zero-to-hero/Zero%20to%20Hero.mp3" },
+        { t: "Пророк Переписок", d: "Вы печатаете ответ еще до вопроса.", s: "https://ia801004.us.archive.org/32/items/friend-like-me/Friend%20Like%20Me.mp3" },
+        { t: "Детектив Мемов", d: "Можете найти оригинал любого видео за 2 секунды.", s: "https://ia601308.us.archive.org/18/items/tvtunes_29015/Chip%20%27n%20Dale%20Rescue%20Rangers.mp3" },
+        { t: "Ультра-Миротворец", d: "Разруливаете любые конфликты одной фразой.", s: "https://ia801005.us.archive.org/22/items/beauty-and-the-beast_202104/Beauty%20and%20the%20Beast.mp3" },
+        { t: "Вечный Студент", d: "Вы каждый день узнаете новое (и забываете).", s: "https://ia801004.us.archive.org/21/items/under-the-sea_202103/Under%20the%20Sea.mp3" },
+        { t: "Анархист-Одуванчик", d: "Выглядите мило, но готовы захватить мир.", s: "https://ia601308.us.archive.org/18/items/TVThemeSongsTVThemesChipnDaleRescueRangers/TV%20THEMES%20-%20Disney%27s%20-%20Chip%20%27n%20Dale%27s%20Rescue%20Rangers%20%2880%27s%20Cartoon%29%20%7BSHORT%20EDIT%20FOR%20TV%7D.mp3" }
     ];
 
     let currentStep = 0;
@@ -197,8 +199,13 @@
         document.getElementById('diag-title').innerText = res.t;
         document.getElementById('diag-desc').innerText = res.d;
         
+        // Сбрасываем плеер для новой песни
+        audio.pause();
         audio.src = res.s;
+        audio.load();
         audio.volume = 0.5;
+        isPlaying = false;
+        musicBtn.innerText = "Эта песня подходит к вашему диагнозу";
     }
 
     function toggleMusic() {
@@ -206,10 +213,12 @@
             audio.pause();
             musicBtn.innerText = "Эта песня подходит к вашему диагнозу";
         } else {
-            audio.play().catch(e => {
-                alert("Ошибка загрузки музыки. Попробуйте нажать кнопку еще раз!");
+            // На мобильных нужно пользовательское действие для запуска
+            audio.play().then(() => {
+                musicBtn.innerText = "Остановить музыку";
+            }).catch(e => {
+                console.log("Ждем загрузки файла...");
             });
-            musicBtn.innerText = "Остановить музыку";
         }
         isPlaying = !isPlaying;
     }
