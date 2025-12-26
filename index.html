@@ -2,127 +2,104 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ужас, летящий на крыльях ночи!</title>
+    <title>GADIONOVKA666</title>
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet">
     <style>
+        /* --- ФОН --- */
         body {
-            background: #1a0033; /* Очень темный фиолетовый */
-            /* Градиент, имитирующий ночное небо */
-            background: linear-gradient(180deg, #0d001a 0%, #2c003e 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
-            overflow: hidden;
+            margin: 0; padding: 0; background: #000;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #fff, rgba(255,255,255,0.3) 8px, transparent 15px),
+                radial-gradient(1.5px 1.5px at 60px 70px, #fff, rgba(255,255,255,0.2) 6px, transparent 12px),
+                radial-gradient(2px 2px at 110px 130px, #fff, rgba(255,255,255,0.3) 8px, transparent 15px),
+                radial-gradient(1.5px 1.5px at 160px 40px, #fff, rgba(255,255,255,0.2) 6px, transparent 12px);
+            background-size: 120px 120px;
+            animation: starsBlink 4s ease-in-out infinite alternate;
+            color: white; display: flex; flex-direction: column; align-items: center;
+            min-height: 100vh; overflow-x: hidden; font-family: Arial, sans-serif; position: relative;
+        }
+        @keyframes starsBlink { 0% { opacity: 1; } 100% { opacity: 0.6; } }
+
+        /* --- ГИРЛЯНДЫ --- */
+        .light { width: 12px; height: 18px; border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%; position: relative; transition: 0.3s; }
+        .light::before { content: ''; position: absolute; background: #111; top: -3px; left: 3px; width: 6px; height: 4px; }
+        
+        .garland-top { width: 100%; height: 40px; border-bottom: 1px solid #222; display: flex; justify-content: space-around; padding: 0 5px; z-index: 10; }
+        .garland-top .light { margin-top: 15px; } 
+        
+        .garland-side { position: fixed; top: 0; height: 100vh; width: 20px; display: flex; flex-direction: column; justify-content: space-around; align-items: center; z-index: 5; }
+        .left-s { left: 5px; } .right-s { right: 5px; }
+        
+        .on .light { animation: blink 0.8s infinite alternate; }
+        .off .light { background: #111 !important; box-shadow: none !important; animation: none !important; }
+        
+        @keyframes blink { from { opacity: 0.4; } to { opacity: 1; box-shadow: 0 0 15px currentColor; } }
+        
+        .light:nth-child(4n+1) { background: #ff0000; color: #ff0000; }
+        .light:nth-child(4n+2) { background: #00ff00; color: #00ff00; }
+        .light:nth-child(4n+3) { background: #0066ff; color: #0066ff; }
+        .light:nth-child(4n+4) { background: #ffff00; color: #ffff00; }
+
+        /* --- ЗАГОЛОВОК --- */
+        h1 { 
+            font-family: 'Creepster', cursive; 
+            color: #FFD700; 
+            width: 98%; 
+            text-align: center; 
+            font-size: 14vw; 
+            margin: 10vh 0 40px; 
+            text-transform: uppercase; 
+            letter-spacing: 1vw; 
+            text-shadow: 4px 4px 0px #4b3b00; 
+            z-index: 2; 
         }
 
-        .card {
-            text-align: center;
-            background: rgba(75, 0, 130, 0.9);
-            padding: 50px;
-            border-radius: 20px;
-            border: 4px solid #ffd700;
-            box-shadow: 0 0 50px rgba(255, 215, 0, 0.2);
-            position: relative;
-            z-index: 10;
-        }
-
-        h1 {
-            color: #ffd700;
-            text-transform: uppercase;
-            font-size: 36px;
-            margin-bottom: 10px;
-            text-shadow: 3px 3px 0px #000;
-        }
-
-        .mask {
-            font-size: 80px;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .btn-play {
-            background: #000;
-            color: #ffd700;
-            border: 3px solid #ffd700;
-            padding: 15px 40px;
-            font-size: 24px;
-            font-weight: bold;
+        /* --- КНОПКА ГИРЛЯНДЫ --- */
+        .btn-toggle { 
             cursor: pointer;
-            border-radius: 5px;
-            transition: 0.3s;
-        }
-
-        .btn-play:hover {
-            background: #ffd700;
-            color: #000;
-            box-shadow: 0 0 20px #ffd700;
-        }
-
-        .status {
-            color: #fff;
-            margin-top: 20px;
-            font-style: italic;
-        }
-
-        /* Анимация мигания глаз при игре */
-        .playing .mask {
-            animation: glow 1s infinite alternate;
-        }
-
-        @keyframes glow {
-            from { filter: drop-shadow(0 0 5px #fff); }
-            to { filter: drop-shadow(0 0 20px #ffd700); }
+            background-color: #000; 
+            color: #fff; 
+            font-size: 24px; 
+            padding: 15px 45px; 
+            border: 4px solid #00f2ff; 
+            box-shadow: 0 0 25px #00f2ff;
+            text-transform: uppercase;
+            font-weight: 900;
+            z-index: 100;
+            clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
         }
     </style>
 </head>
 <body>
-
-    <div class="card" id="mainContainer">
-        <span class="mask">🎭</span>
-        <h1>Чёрный Плащ</h1>
-        <p style="color: #d8bfd8;">Я ужас, летящий на крыльях ночи!</p>
-        
-        <button class="btn-play" id="playBtn" onclick="playMusic()">ОТ ВИНТА!</button>
-        
-        <p id="status" class="status">Город спит спокойно...</p>
-
-        <audio id="audio">
-            <source src="https://www.myinstants.com/media/sounds/chernyi-plashch.mp3" type="audio/mpeg">
-            <source src="https://archive.org/download/darkwing-duck-russian/Darkwing%20Duck%20-%20Russian%20Theme.mp3" type="audio/mpeg">
-        </audio>
+    <div class="garland-top on garland-node">
+        <div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div>
+        <div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div>
     </div>
 
-    <script>
-        const audio = document.getElementById('audio');
-        const btn = document.getElementById('playBtn');
-        const status = document.getElementById('status');
-        const container = document.getElementById('mainContainer');
-        let playing = false;
+    <div class="garland-side left-s on garland-node">
+        <div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div>
+    </div>
+    <div class="garland-side right-s on garland-node">
+        <div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div>
+    </div>
 
-        function playMusic() {
-            if (!playing) {
-                audio.play().then(() => {
-                    status.innerText = "Только свистни — он появится!";
-                    btn.innerText = "ИСЧЕЗНУТЬ";
-                    container.classList.add('playing');
-                    playing = true;
-                }).catch(e => {
-                    status.innerText = "Ошибка загрузки звука ☹️";
-                    console.log(e);
-                });
-            } else {
-                audio.pause();
-                audio.currentTime = 0;
-                status.innerText = "Город снова в безопасности";
-                btn.innerText = "ОТ ВИНТА!";
-                container.classList.remove('playing');
-                playing = false;
-            }
+    <h1>GADIONOVKA666</h1>
+
+    <button class="btn-toggle" onclick="toggleGarland()">ЖМЯК</button>
+
+    <script>
+        const horrorSound = new Audio('https://www.myinstants.com/media/sounds/horror-ghost-sound-effect.mp3');
+
+        function toggleGarland() { 
+            const nodes = document.querySelectorAll('.garland-node');
+            nodes.forEach(n => { 
+                n.classList.toggle('on'); 
+                n.classList.toggle('off'); 
+            });
+            // Звук при нажатии
+            horrorSound.currentTime = 0; 
+            horrorSound.play().catch(()=>{});
         }
     </script>
-
 </body>
 </html>
