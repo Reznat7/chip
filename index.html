@@ -29,7 +29,8 @@
         /* --- ГИРЛЯНДЫ --- */
         .light { width: 12px; height: 18px; border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%; position: relative; transition: 0.3s; }
         .light::before { content: ''; position: absolute; background: #111; top: -3px; left: 3px; width: 6px; height: 4px; }
-        .garland-top { width: 100%; height: 40px; border-bottom: 1px solid #222; display: flex; justify-content: space-around; padding: 0 5px; z-index: 10; }
+        /* Добавлен position: relative для корректной работы z-index */
+        .garland-top { width: 100%; height: 40px; border-bottom: 1px solid #222; display: flex; justify-content: space-around; padding: 0 5px; z-index: 10; position: relative; }
         .garland-top .light { margin-top: 15px; } 
         .garland-side { position: fixed; top: 0; height: 100vh; width: 20px; display: flex; flex-direction: column; justify-content: space-around; align-items: center; z-index: 5; }
         .left-s { left: 5px; } .right-s { right: 5px; }
@@ -41,29 +42,34 @@
         .light:nth-child(4n+3) { background: #0066ff; color: #0066ff; }
         .light:nth-child(4n+4) { background: #ffff00; color: #ffff00; }
 
-        /* УВЕЛИЧЕННЫЙ ЗАГОЛОВОК */
+        /* УВЕЛИЧЕННЫЙ ЗАГОЛОВОК С ИСПРАВЛЕННЫМ ПЕРЕКРЫТИЕМ */
         h1.main-title { 
             font-family: 'Creepster', cursive; 
             color: #FFD700; 
             width: 98%; 
             text-align: center; 
-            font-size: 15vw; /* Увеличено с 10vw до 15vw */
-            margin: 40px 0 20px; 
+            font-size: 15vw; 
+            /* Увеличен отступ сверху, чтобы не перекрывать гирлянду */
+            margin: 110px 0 20px; 
             text-transform: uppercase; 
             letter-spacing: 1vw; 
             text-shadow: 5px 5px 0px #4b3b00; 
-            z-index: 2; 
+            /* Понижен z-index, чтобы быть под гирляндой */
+            z-index: 1; 
+            position: relative;
         }
 
-        /* --- КНОПКИ ГЛАВНЫЕ (УВЕЛИЧЕНЫ) --- */
+        /* --- КНОПКИ ГЛАВНЫЕ (УМЕНЬШЕНЫ) --- */
         .main-btns-container { display: flex; gap: 30px; flex-wrap: wrap; justify-content: center; z-index: 100; margin-bottom: 30px; }
         .btn-base { cursor: pointer; transition: 0.3s; text-transform: uppercase; font-weight: 900; border: none; font-family: 'Orbitron', sans-serif; }
         
         .btn-toggle { background-color: #000; color: #fff; font-size: 24px; padding: 15px 45px; border: 4px solid #00f2ff; box-shadow: 0 0 15px #00f2ff; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); width: auto; margin: 0 auto; display: block;}
         
-        .btn-test { background: var(--primary); color: white; font-size: 26px; padding: 25px 60px; border-radius: 60px; box-shadow: 0 0 25px var(--primary); animation: pulseBtn 1.5s infinite; }
+        /* Уменьшены размеры кнопок */
+        .btn-test { background: var(--primary); color: white; font-size: 22px; padding: 20px 50px; border-radius: 60px; box-shadow: 0 0 25px var(--primary); animation: pulseBtn 1.5s infinite; }
         
-        .btn-chill { background: var(--chill); color: #000; font-size: 26px; padding: 25px 60px; border-radius: 60px; box-shadow: 0 0 25px var(--chill); display: flex; align-items: center; gap: 15px; }
+        /* Уменьшены размеры кнопок */
+        .btn-chill { background: var(--chill); color: #000; font-size: 22px; padding: 20px 50px; border-radius: 60px; box-shadow: 0 0 25px var(--chill); display: flex; align-items: center; gap: 15px; }
         .btn-chill span { display: inline-block; animation: carDrive 0.5s infinite linear; font-size: 1.6em; }
 
         @keyframes carDrive { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
@@ -88,7 +94,7 @@
         .close-test { background: #222; border: 5px solid var(--primary); color: var(--primary); cursor: pointer; font-size: 1.8em; margin: 40px auto 20px; padding: 20px 60px; border-radius: 50px; text-transform: uppercase; font-weight: 900; display: block; animation: pulseClose 2s infinite ease-in-out; }
         @keyframes pulseClose { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 30px var(--primary); } }
 
-        /* --- ЭКРАН ОТСЧЕТА (7 СЕКУНД + ТЕКСТ ВНИЗУ) --- */
+        /* --- ЭКРАН ОТСЧЕТА (7 СЕКУНД + ТЕКСТ ВНИЗУ + КНОПКА ОТМЕНА) --- */
         #chill-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.98);
             z-index: 3000; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px;
@@ -103,6 +109,24 @@
             text-shadow: 0 0 20px #000;
         }
         #chill-msg span { color: #ff0000; }
+        
+        /* Стиль для новой кнопки отмены */
+        .btn-cancel-chill {
+            background: #222;
+            border: 4px solid var(--primary);
+            color: var(--primary);
+            cursor: pointer;
+            font-size: 1.5em;
+            margin-top: 40px;
+            padding: 15px 50px;
+            border-radius: 50px;
+            text-transform: uppercase;
+            font-weight: 900;
+            font-family: 'Orbitron', sans-serif;
+            animation: pulseClose 2s infinite ease-in-out;
+            display: none; /* Скрыта по умолчанию */
+        }
+
         @keyframes pulseCountdown { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
     </style>
 </head>
@@ -124,6 +148,7 @@
     <div id="chill-overlay">
         <div id="chill-counter">7</div>
         <div id="chill-msg">ХОЧЕШЬ ПОКАТАТЬСЯ НАЖМИ <span>BEGIN</span>..</div>
+        <button id="chill-cancel-btn" class="btn-cancel-chill" onclick="cancelChill()">ОТМЕНА</button>
     </div>
 
     <div id="test-overlay">
@@ -154,6 +179,9 @@
         const drumSound = new Audio('https://www.myinstants.com/media/sounds/drum-roll.mp3');
         drumSound.volume = 0.5;
 
+        // Глобальная переменная для таймера
+        let chillTimer;
+
         function toggleGarland() { 
             const nodes = document.querySelectorAll('.garland-node');
             nodes.forEach(n => { n.classList.toggle('on'); n.classList.toggle('off'); });
@@ -165,19 +193,37 @@
             clickSound.play();
             const overlay = document.getElementById('chill-overlay');
             const counter = document.getElementById('chill-counter');
+            const msg = document.getElementById('chill-msg');
+            const cancelBtn = document.getElementById('chill-cancel-btn');
+            
             overlay.style.display = 'flex';
+            counter.style.display = 'block';
+            msg.style.display = 'block';
+            cancelBtn.style.display = 'block'; // Показываем кнопку отмены
             
             let timeLeft = 7; 
             counter.textContent = timeLeft;
 
-            const timer = setInterval(() => {
+            // Присваиваем таймер глобальной переменной
+            chillTimer = setInterval(() => {
                 timeLeft--;
                 counter.textContent = timeLeft;
                 if (timeLeft <= 0) {
-                    clearInterval(timer);
-                    window.location.href = "https://slowroads.io/";
+                    clearInterval(chillTimer);
+                    counter.style.display = 'none';
+                    cancelBtn.style.display = 'none'; // Скрываем кнопку отмены перед переходом
+                    setTimeout(() => {
+                        window.location.href = "https://slowroads.io/";
+                    }, 1500);
                 }
             }, 1000);
+        }
+
+        // Функция для отмены перехода
+        function cancelChill() {
+            clickSound.play();
+            clearInterval(chillTimer); // Останавливаем таймер
+            document.getElementById('chill-overlay').style.display = 'none'; // Скрываем экран
         }
 
         function openQuiz() { document.getElementById('test-overlay').style.display = 'flex'; restartQuiz(); }
