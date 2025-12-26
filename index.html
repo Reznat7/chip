@@ -5,7 +5,6 @@
     <title>GADIONOVKA666</title>
     <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Orbitron:wght@900&family=Roboto:wght@900&display=swap" rel="stylesheet">
     <style>
-        /* --- БАЗОВЫЕ СТИЛИ (НЕ МЕНЯЛИСЬ) --- */
         body {
             margin: 0; padding: 0; background: #000;
             background-image: 
@@ -25,6 +24,7 @@
             pointer-events: none; z-index: 1; overflow: hidden;
         }
 
+        /* --- КНОПКА АТОМ ⚛️ (СЛЕВА) --- */
         .btn-mode {
             position: fixed; top: 52vh; left: 10px;
             background: rgba(0, 242, 255, 0.2);
@@ -35,12 +35,36 @@
             box-shadow: 0 0 15px #00f2ff;
         }
 
+        /* --- НОВАЯ КНОПКА СПРАВА В РАМКЕ --- */
+        .right-framed-container {
+            position: fixed; top: 52vh; right: 10px;
+            display: flex; flex-direction: column; align-items: center;
+            z-index: 1000;
+        }
+        .btn-second-page {
+            background-color: #000;
+            color: #00ff00; /* Зеленый неон */
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px; font-weight: 900;
+            padding: 12px 20px;
+            border: 3px solid #00ff00;
+            border-radius: 12px;
+            box-shadow: 0 0 20px #00ff00, inset 0 0 10px #00ff00;
+            text-shadow: 0 0 5px #00ff00;
+            cursor: pointer; text-decoration: none;
+            transition: 0.3s; text-align: center;
+        }
+        .btn-second-page:active { transform: scale(0.9); }
+        .garland-mini-frame { display: flex; gap: 8px; margin: 5px 0; pointer-events: none; }
+
+        /* ЭФФЕКТЫ */
         .laser-ptr { position: absolute; width: 50px; height: 4px; border-radius: 4px; filter: blur(0.5px); }
         .laser-spark { position: absolute; width: 15px; height: 15px; border-radius: 50%; animation: spark-out 0.3s ease-out forwards; }
         @keyframes spark-out { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(3); opacity: 0; } }
         .particle { position: absolute; pointer-events: none; }
         @keyframes fall { 0% { transform: translateY(-100px); opacity: 0; } 10% { opacity: 1; } 100% { transform: translateY(60vh); opacity: 0; } }
 
+        /* ГИРЛЯНДЫ */
         .light { width: 12px; height: 18px; border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%; position: relative; transition: 0.3s; }
         .light::before { content: ''; position: absolute; background: #111; top: -3px; left: 3px; width: 6px; height: 4px; }
         .garland-top { width: 100%; height: 40px; border-bottom: 1px solid #222; display: flex; justify-content: space-around; padding: 0 5px; z-index: 10; }
@@ -55,6 +79,7 @@
         .light:nth-child(4n+3) { background: #0066ff; color: #0066ff; }
         .light:nth-child(4n+4) { background: #ffff00; color: #ffff00; }
 
+        /* ИНТЕРФЕЙС */
         h1 { font-family: 'Creepster', cursive; color: #FFD700; width: 98%; text-align: center; font-size: 14vw; margin: 40px 0 20px; text-transform: uppercase; letter-spacing: 1vw; text-shadow: 4px 4px 0px #4b3b00; z-index: 2; }
         .button-container { display: flex; flex-direction: row; justify-content: center; align-items: center; gap: 20px; margin-top: 15px; z-index: 100; width: 98%; }
         .btn-base { cursor: pointer; transition: 0.2s; text-transform: uppercase; font-weight: 900; display: flex; align-items: center; justify-content: center; border: none; }
@@ -62,98 +87,18 @@
         .btn-toggle { background-color: #000; color: #fff; font-family: 'Orbitron', sans-serif; font-size: 24px; padding: 15px 45px; border: 4px solid #00f2ff; box-shadow: 0 0 25px #00f2ff, inset 0 0 10px #ff00e0; text-shadow: 3px 3px 0px #ff00e0; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); }
         .btn-ball { background: radial-gradient(circle at 30% 30%, #4b0082, #000); color: #fff; font-family: 'Roboto', sans-serif; font-size: 20px; padding: 15px 25px; border: 4px solid #9400d3; border-radius: 50px; box-shadow: 0 0 20px #9400d3; }
 
-        /* --- НОВЫЕ СТИЛИ ДЛЯ КНОПКИ "ВТОРАЯ СТРАНИЦА" И ЕЁ РАМКИ --- */
-        .framed-button-wrapper {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 10px 0;
-            z-index: 101;
-        }
-        /* Зеленый неоновый стиль кнопки */
-        .btn-second-page {
-            background-color: #000;
-            color: #00ff00; /* Зеленый текст */
-            font-family: 'Orbitron', sans-serif;
-            font-size: 22px;
-            padding: 15px 40px;
-            border: 3px solid #00ff00; /* Зеленая рамка */
-            border-radius: 12px;
-            box-shadow: 0 0 25px #00ff00, inset 0 0 10px #00ff00; /* Зеленое свечение */
-            text-shadow: 2px 2px 4px rgba(0, 255, 0, 0.7);
-            text-decoration: none; /* Убираем подчеркивание ссылки */
-        }
-        /* Стили для рамки из гирлянд вокруг кнопки */
-        .garland-frame-part {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            pointer-events: none; /* Чтобы не мешать нажатию на кнопку */
-        }
-        .garland-frame-top { margin-bottom: -12px; z-index: 102; }
-        .garland-frame-bottom { margin-top: -12px; z-index: 102; }
-        /* --------------------------------------------------------- */
-
-
-        /* ПЛЕЕР */
+        /* ПЛЕЕР (УВЕЛИЧЕН) */
         .music-container {
-            margin-top: 35px;
-            padding: 30px;
-            background: rgba(0,0,0,0.7);
-            border-radius: 30px;
-            flex-direction: column;
-            width: 480px;
-            max-width: 95%;
-            z-index: 100;
-            display: flex;
-            align-items: center;
+            margin-top: 35px; padding: 30px; background: rgba(0,0,0,0.7); border-radius: 30px; 
+            flex-direction: column; width: 480px; max-width: 95%; z-index: 100; display: flex; align-items: center;
         }
-        .player-controls {
-            display: flex;
-            align-items: center;
-            gap: 25px;
-        }
-        .btn-music-main {
-            background: #ff0080;
-            color: white;
-            font-size: 26px;
-            padding: 18px 45px;
-            border-radius: 15px;
-            border: 3px solid #fff;
-            box-shadow: 0 0 25px #ff0080;
-        }
-        .btn-nav {
-            background: #222;
-            color: #00f2ff;
-            font-size: 32px;
-            padding: 12px 25px;
-            border-radius: 12px;
-            border: 3px solid #00f2ff;
-        }
-        .btn-shuffle {
-            background: #222;
-            color: #fff;
-            font-size: 30px;
-            border-radius: 50%;
-            width: 75px;
-            height: 75px;
-            border: 3px solid #555;
-        }
+        .player-controls { display: flex; align-items: center; gap: 25px; }
+        .btn-music-main { background: #ff0080; color: white; font-size: 26px; padding: 18px 45px; border-radius: 15px; border: 3px solid #fff; box-shadow: 0 0 25px #ff0080; }
+        .btn-nav { background: #222; color: #00f2ff; font-size: 32px; padding: 12px 25px; border-radius: 12px; border: 3px solid #00f2ff; }
+        .btn-shuffle { background: #222; color: #fff; font-size: 30px; border-radius: 50%; width: 75px; height: 75px; border: 3px solid #555; }
         .btn-shuffle.active { color: #00f2ff; border-color: #00f2ff; box-shadow: 0 0 20px #00f2ff; }
-        #seek-bar {
-            width: 100%;
-            height: 18px;
-            cursor: pointer;
-            accent-color: #00f2ff;
-            margin: 25px 0;
-        }
-        .time-txt, #track-info {
-            font-family: 'Orbitron', sans-serif;
-            color: #00f2ff;
-            font-size: 24px;
-            font-weight: bold;
-        }
+        #seek-bar { width: 100%; height: 18px; cursor: pointer; accent-color: #00f2ff; margin: 25px 0; }
+        .time-txt, #track-info { font-family: 'Orbitron', sans-serif; color: #00f2ff; font-size: 24px; font-weight: bold; }
 
         .result-wrapper { display: flex; flex-direction: column; align-items: center; margin: 25px 0; width: 95%; z-index: 100; min-height: 120px; }
         #random-result { text-align: center; font-family: 'Creepster', cursive; font-size: 38px; opacity: 0; transition: opacity 0.5s; line-height: 1.2; }
@@ -163,7 +108,6 @@
         @keyframes digitPulse { 0% { transform: scale(1); } 50% { transform: scale(1.6); } 100% { transform: scale(1); } }
         .fire-style { color: #ffcc00; text-shadow: 0 0 15px #ff4500; }
         .magic-style { color: #e0b0ff; text-shadow: 0 0 15px #9400d3; }
-
         .pistols { position: fixed; bottom: 15px; display: flex; gap: 30px; font-size: 70px; filter: drop-shadow(0 0 10px gold); z-index: 10; }
     </style>
 </head>
@@ -171,27 +115,22 @@
     <div class="garland-top on garland-node"><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div><div class="light"></div></div>
     <div class="garland-side left-s on garland-node"><div class="light"></div><div class="light"></div><div class="light"></div></div>
     <div class="garland-side right-s on garland-node"><div class="light"></div><div class="light"></div><div class="light"></div></div>
+
     <button class="btn-mode" onclick="changeMode()">⚛️</button>
+
+    <div class="right-framed-container">
+        <div class="garland-mini-frame on garland-node">
+            <div class="light"></div><div class="light"></div><div class="light"></div>
+        </div>
+        <a href="chip.html" class="btn-second-page">ВТОРАЯ СТРАНИЦА</a>
+        <div class="garland-mini-frame on garland-node">
+            <div class="light"></div><div class="light"></div><div class="light"></div>
+        </div>
+    </div>
+
     <div id="effect-container"></div>
     <h1>GADIONOVKA666</h1>
 
-    <div class="framed-button-wrapper">
-        <div class="garland-frame-part garland-frame-top on garland-node">
-            <div class="light" style="background: #00ff00; color: #00ff00;"></div>
-            <div class="light" style="background: #ff0000; color: #ff0000;"></div>
-            <div class="light" style="background: #00ff00; color: #00ff00;"></div>
-        </div>
-        
-        <a href="chip.html" style="text-decoration: none;">
-            <button class="btn-base btn-second-page">ВТОРАЯ СТРАНИЦА</button>
-        </a>
-
-        <div class="garland-frame-part garland-frame-bottom on garland-node">
-             <div class="light" style="background: #0066ff; color: #0066ff;"></div>
-             <div class="light" style="background: #ffff00; color: #ffff00;"></div>
-             <div class="light" style="background: #0066ff; color: #0066ff;"></div>
-        </div>
-    </div>
     <div class="button-container">
         <button class="btn-base btn-random" onclick="showRandomPhrase()">А ЧЕМ ЖЕ ЗАНЯТЬСЯ🤔 ?</button>
         <button class="btn-base btn-toggle" onclick="toggleGarland()">ЖМЯК</button>
@@ -212,6 +151,7 @@
         </div>
         <div id="track-info">ТРЕК: 1 / 121</div>
     </div>
+
     <div class="result-wrapper">
         <div id="random-result"></div>
         <div id="countdown-box"></div>
@@ -220,69 +160,12 @@
 
     <script>
         const horrorSound = new Audio('https://www.myinstants.com/media/sounds/horror-ghost-sound-effect.mp3');
-        
-        const songs = [
-            "3OH!3 - Starstrukk.mp3", "5 Seconds of Summer - Teeth.mp3", "AC_DC - Back In Black.mp3", "Afric Simone - Hafanana.mp3",
-            "Aroon Bassi - I Wanna Be Your Slave Tiktok Edition; Originally Performed by Mane.mp3",
-            "Baha Men - Who Let The Dogs Out Ё§ дЁ«м¬  <Њ «мзЁи­ЁЄ ў ‚ҐЈ бҐ>.mp3", "Basshunter - Now You're Gone.mp3",
-            "Bill Haley & His Comets - (We're Gonna) Rock Around The Clock Single Version.mp3",
-            "Black Eyed Peas - Pump It Ё§ дЁ«м¬  <’ ЄбЁ 4>.mp3", "Bling Bling Bros - Yeah.mp3", "Boostereo, The Trendy - Dub-I-Dub.mp3",
-            "Bruno Mars - Runaway Baby.mp3", "C+C Music Factory - Gonna Make You Sweat (Everybody Dance Now).mp3",
-            "Cartoons - Witch Doctor.mp3", "CDM Project - Around the World.mp3", "Cody Simpson - SURFBOARD.mp3",
-            "Crazy Frog - Axel f radio mix.mp3", "Crazy Frog - Axel f.mp3", "Crazy Frog - I like to move it.mp3",
-            "Dj Jump - Freestyler.mp3", "DJ Perreo - Astronomia Mix.mp3",
-            "DJ Vibrant - I WANNA BE YOUR SLAVE Tribute Version Originally Performed By Manes.mp3",
-            "DMX - Party Up (Up in Here) [Re-Recorded].mp3", "Dream Chaos - Lesson.mp3", "East End Brothers - Bye Bye Bye.mp3",
-            "Edwin Starr - War.mp3", "Endor - Pump It Up.mp3",
-            "F4st, Sara Tunes, Fainal - Dance Dance Dance With My Hands Hands Hands (Bloody M.mp3",
-            "fenekot - Love the Way You Lie (Cover).mp3", "Flo Rida - Whistle.mp3", "Flo Rida, Kesha - Right Round.mp3",
-            "Flo Rida, Sage The Gemini, Lookas - GDFR Ё§ дЁ«м¬  <„н¤Їг«>.mp3",
-            "Flo Rida, Sage The Gemini, Lookas, K. Theory - GDFR K Theory Remix; feat. Sage t.mp3", "FO&O - Freestyler.mp3",
-            "Geek Music - Darkwing Duck Main Theme (From Darkwing Duck).mp3", "Geek Music - Duck Tales - Main Theme.mp3",
-            "George Thorogood - Bad to the Bone Rerecorded & Extended Version.mp3", "Graham Blvd - Brother Louie '98.mp3",
-            "Grandma's Smuzi - Carol of the Bells.mp3", "Grits, TobyMac - Ooh Ahh (My Life Be Like) feat. Toby Mac.mp3",
-            "Haddaway - What Is Love 7 Mix.mp3", "Haddaway - What Is Love Original 7'' Mix.mp3", "Huts - Astronomia (Coffin Dance).mp3",
-            "Imagine Dragons, Lil Wayne - Believer.mp3", "In-Grid - Tu Es Foutu (Rico Bernasconi Re-Cut).mp3", "ITCHY - It's Tricky.mp3",
-            "James Brown - I Got You (I Feel Good) Ё§ дЁ«м¬  <„¦Ґ©¬б Ѓа г­_ Џгвм ­ ўҐае>.mp3", "Jay-Way - No, I'm Not Ok.mp3",
-            "Jendrik - I Don't Feel Hate ѓҐа¬ ­Ёп ­  <…ўа®ўЁ¤Ґ­ЁЁ-2021>.mp3", "Josh A - DOUBT ME.mp3",
-            "Jump5 - Aloha, E Komo Mai (Theme Song from Lilo & Stitch_ The Series) Extended V.mp3",
-            "Just Kids - Chip 'N Dale Rescue Rangers Main Theme (From Chip 'N Dale Rescue Ran.mp3", "Klaas - Sweet Dreams.mp3",
-            "LANNE - Astronomia.mp3", "Lee Rocker - Hard Headed Woman [#].mp3", "Lil Deal - Old Town Road.mp3", "Lil High Vibes - Low.mp3",
-            "Lil Jon, Ludacris, Usher - Yeah! (feat. Lil Jon & Ludacris).mp3",
-            "Lil_Nas_X_RM_of_BTS_-_Seoul_Town_Road_Old_Town_Road_Remix_65679251.mp3", "Linkin Park - Numb.mp3",
-            "Lou Bega - Mambo No. 5 (A Little Bit Of.).mp3", "LUM!X, Gabry Ponte, Robin Schulz - Monster Robin Schulz Remix.mp3",
-            "Mambo King - Mambo N. 5.mp3", "Mark_Ronson_-_Uptown_Funk_48054296.mp3", "Maroon 5 - Lucky Strike.mp3",
-            "Michel Telo - Bara Bara Bere Bere.mp3", "Monkey Circus - El Ritmo Hafanana Spanish Fiesta Remix.mp3",
-            "Mr. President - Coco Jamboo.mp3", "Nathan Lane, Ernie Sabella, Jason Weaver, Joseph Williams - Hakuna Matata.mp3",
-            "NEFFEX - Best of Me.mp3", "NEFFEX - CEO.mp3", "NEFFEX - Fear.mp3", "NEFFEX - Inspired.mp3", "NEFFEX - Leading.mp3",
-            "NEFFEX - Legendary.mp3", "NEFFEX - Life.mp3", "NEFFEX - My Mind.mp3", "NEFFEX - My Way.mp3", "NEFFEX - New Year, New Me.mp3",
-            "NEFFEX - The Plague.mp3", "NEFFEX - Till My Hands Bleed.mp3", "New Mediterrana Group - Chiwawa.mp3",
-            "O-Zone - Dragostea Din Tei Romanian Version.mp3", "Ofenbach, Brodie Barclay - You Don't Know Me.mp3",
-            "Ofenbach, Nick Waterhouse - Katchi (Ofenbach vs. Nick Waterhouse).mp3", "Outasight - The Boogie.mp3",
-            "Pat Benesta - Witch Doctor.mp3", "Paul Velchev - Godzilla.mp3",
-            "Pharrell_Williams_-_Happy_iz_multfilma_Gadkijj_ya_2_74973923.mp3", "Pitbull_-_Timber_47998201.mp3",
-            "Portugal. The Man - Feel It Still.mp3", "PSY - Gangnam Style (1).mp3", "PSY - Gangnam Style.mp3", "Queen - We Will Rock You.mp3",
-            "Ray Parker Jr. - Ghostbusters Ё§ дЁ«м¬  <Ће®в­ЁЄЁ §  ЇаЁўЁ¤Ґ­Ёп¬Ё>.mp3", "Rednex - cotton eye joe.mp3",
-            "Run DMC - It's Tricky.mp3", "Sage The Gemini, BygTwo3 - Tick Tick Boom.mp3", "Shaggy - Boombastic.mp3",
-            "Shane Thompson - Stay.mp3", "Shawn Mendes - Something Big.mp3", "Smash Mouth - All Star Ё§ ¬г«мвдЁ«м¬  <˜анЄ>.mp3",
-            "Steve Jablonsky, The Ninja Turtles - Teenage Mutant Ninja Turtles Theme.mp3", "Steven Cooper - Born to Do.mp3",
-            "Tacabro - Tacata (UK Cut).mp3", "Tacabro - Tacata Radio Edit.mp3", "Tendncia_DJ_Edm_-_Astronaut_In_The_Ocean_77729960.mp3",
-            "Teriyaki Boyz - Tokyo Drift (Fast & Furious) From The Fast And The Furious_ Toky.mp3",
-            "Tessa_Thompson_-_I_Will_Go_To_War_OST_Krid_2_62604486.mp3", "The Faim - One Way or Another.mp3",
-            "The Immortals - Techno Syndrome (Mortal Kombat).mp3",
-            "The Latin Party Allstars - Livin' La Vida Loca Originally Recorded by Ricky Mart.mp3", "The Score - Legend.mp3",
-            "Tim McMorris - Just Feel the Beat.mp3", "Tim McMorris - Life Is Beautiful.mp3", "Timmy Trumpet, Savage - Freaks.mp3",
-            "Vo Williams - Ready Set.mp3", "Yolanda Be Cool vrs DCUP - We No Speak Americano Chew Fu Radio Mix.mp3",
-            "Zayde_Wlf_-_Gladiator_56531864.mp3", "Ђавга ЏЁа®¦Є®ў - Dancing All Through the Night.mp3"
-        ];
+        const songs = ["3OH!3 - Starstrukk.mp3","5 Seconds of Summer - Teeth.mp3","AC_DC - Back In Black.mp3","Afric Simone - Hafanana.mp3","Aroon Bassi - I Wanna Be Your Slave Tiktok Edition; Originally Performed by Mane.mp3","Baha Men - Who Let The Dogs Out Ё§ дЁ«м¬  <Њ «мзЁи­ЁЄ ў ‚ҐЈ бҐ>.mp3","Basshunter - Now You're Gone.mp3","Bill Haley & His Comets - (We're Gonna) Rock Around The Clock Single Version.mp3","Black Eyed Peas - Pump It Ё§ дЁ«м¬  <’ ЄбЁ 4>.mp3","Bling Bling Bros - Yeah.mp3","Boostereo, The Trendy - Dub-I-Dub.mp3","Bruno Mars - Runaway Baby.mp3","C+C Music Factory - Gonna Make You Sweat (Everybody Dance Now).mp3","Cartoons - Witch Doctor.mp3","CDM Project - Around the World.mp3","Cody Simpson - SURFBOARD.mp3","Crazy Frog - Axel f radio mix.mp3","Crazy Frog - Axel f.mp3","Crazy Frog - I like to move it.mp3","Dj Jump - Freestyler.mp3","DJ Perreo - Astronomia Mix.mp3","DJ Vibrant - I WANNA BE YOUR SLAVE Tribute Version Originally Performed By Manes.mp3","DMX - Party Up (Up in Here) [Re-Recorded].mp3","Dream Chaos - Lesson.mp3","East End Brothers - Bye Bye Bye.mp3","Edwin Starr - War.mp3","Endor - Pump It Up.mp3","F4st, Sara Tunes, Fainal - Dance Dance Dance With My Hands Hands Hands (Bloody M.mp3","fenekot - Love the Way You Lie (Cover).mp3","Flo Rida - Whistle.mp3","Flo Rida, Kesha - Right Round.mp3","Flo Rida, Sage The Gemini, Lookas - GDFR Ё§ дЁ«м¬  <„н¤Їг«>.mp3","Flo Rida, Sage The Gemini, Lookas, K. Theory - GDFR K Theory Remix; feat. Sage t.mp3","FO&O - Freestyler.mp3","Geek Music - Darkwing Duck Main Theme (From Darkwing Duck).mp3","Geek Music - Duck Tales - Main Theme.mp3","George Thorogood - Bad to the Bone Rerecorded & Extended Version.mp3","Graham Blvd - Brother Louie '98.mp3","Grandma's Smuzi - Carol of the Bells.mp3","Grits, TobyMac - Ooh Ahh (My Life Be Like) feat. Toby Mac.mp3","Haddaway - What Is Love 7 Mix.mp3","Haddaway - What Is Love Original 7'' Mix.mp3","Huts - Astronomia (Coffin Dance).mp3","Imagine Dragons, Lil Wayne - Believer.mp3","In-Grid - Tu Es Foutu (Rico Bernasconi Re-Cut).mp3","ITCHY - It's Tricky.mp3","James Brown - I Got You (I Feel Good) Ё§ дЁ«м¬  <„¦Ґ©¬б Ѓа г­_ Џгвм ­ ўҐае>.mp3","Jay-Way - No, I'm Not Ok.mp3","Jendrik - I Don't Feel Hate ѓҐа¬ ­Ёп ­  <…ўа®ўЁ¤Ґ­ЁЁ-2021>.mp3","Josh A - DOUBT ME.mp3","Jump5 - Aloha, E Komo Mai (Theme Song from Lilo & Stitch_ The Series) Extended V.mp3","Just Kids - Chip 'N Dale Rescue Rangers Main Theme (From Chip 'N Dale Rescue Ran.mp3","Klaas - Sweet Dreams.mp3","LANNE - Astronomia.mp3","Lee Rocker - Hard Headed Woman [#].mp3","Lil Deal - Old Town Road.mp3","Lil High Vibes - Low.mp3","Lil Jon, Ludacris, Usher - Yeah! (feat. Lil Jon & Ludacris).mp3","Lil_Nas_X_RM_of_BTS_-_Seoul_Town_Road_Old_Town_Road_Remix_65679251.mp3","Linkin Park - Numb.mp3","Lou Bega - Mambo No. 5 (A Little Bit Of.).mp3","LUM!X, Gabry Ponte, Robin Schulz - Monster Robin Schulz Remix.mp3","Mambo King - Mambo N. 5.mp3","Mark_Ronson_-_Uptown_Funk_48054296.mp3","Maroon 5 - Lucky Strike.mp3","Michel Telo - Bara Bara Bere Bere.mp3","Monkey Circus - El Ritmo Hafanana Spanish Fiesta Remix.mp3","Mr. President - Coco Jamboo.mp3","Nathan Lane, Ernie Sabella, Jason Weaver, Joseph Williams - Hakuna Matata.mp3","NEFFEX - Best of Me.mp3","NEFFEX - CEO.mp3","NEFFEX - Fear.mp3","NEFFEX - Inspired.mp3","NEFFEX - Leading.mp3","NEFFEX - Legendary.mp3","NEFFEX - Life.mp3","NEFFEX - My Mind.mp3","NEFFEX - My Way.mp3","NEFFEX - New Year, New Me.mp3","NEFFEX - The Plague.mp3","NEFFEX - Till My Hands Bleed.mp3","New Mediterrana Group - Chiwawa.mp3","O-Zone - Dragostea Din Tei Romanian Version.mp3","Ofenbach, Brodie Barclay - You Don't Know Me.mp3","Ofenbach, Nick Waterhouse - Katchi (Ofenbach vs. Nick Waterhouse).mp3","Outasight - The Boogie.mp3","Pat Benesta - Witch Doctor.mp3","Paul Velchev - Godzilla.mp3","Pharrell_Williams_-_Happy_iz_multfilma_Gadkijj_ya_2_74973923.mp3","Pitbull_-_Timber_47998201.mp3","Portugal. The Man - Feel It Still.mp3","PSY - Gangnam Style (1).mp3","PSY - Gangnam Style.mp3","Queen - We Will Rock You.mp3","Ray Parker Jr. - Ghostbusters Ё§ дЁ«м¬  <Ће®в­ЁЄЁ §  ЇаЁўЁ¤Ґ­Ёп¬Ё>.mp3","Rednex - cotton eye joe.mp3","Run DMC - It's Tricky.mp3","Sage The Gemini, BygTwo3 - Tick Tick Boom.mp3","Shaggy - Boombastic.mp3","Shane Thompson - Stay.mp3","Shawn Mendes - Something Big.mp3","Smash Mouth - All Star Ё§ ¬г«мвдЁ«м¬  <˜анЄ>.mp3","Steve Jablonsky, The Ninja Turtles - Teenage Mutant Ninja Turtles Theme.mp3","Steven Cooper - Born to Do.mp3","Tacabro - Tacata (UK Cut).mp3","Tacabro - Tacata Radio Edit.mp3","Tendncia_DJ_Edm_-_Astronaut_In_The_Ocean_77729960.mp3","Teriyaki Boyz - Tokyo Drift (Fast & Furious) From The Fast And The Furious_ Toky.mp3","Tessa_Thompson_-_I_Will_Go_To_War_OST_Krid_2_62604486.mp3","The Faim - One Way or Another.mp3","The Immortals - Techno Syndrome (Mortal Kombat).mp3","The Latin Party Allstars - Livin' La Vida Loca Originally Recorded by Ricky Mart.mp3","The Score - Legend.mp3","Tim McMorris - Just Feel the Beat.mp3","Tim McMorris - Life Is Beautiful.mp3","Timmy Trumpet, Savage - Freaks.mp3","Vo Williams - Ready Set.mp3","Yolanda Be Cool vrs DCUP - We No Speak Americano Chew Fu Radio Mix.mp3","Zayde_Wlf_-_Gladiator_56531864.mp3","Ђавга ЏЁа®¦Є®ў - Dancing All Through the Night.mp3"];
 
         let currentTrack = 0, isPlaying = false, isShuffle = false, loopAnim;
         const audio = new Audio();
         const baseUrl = "https://raw.githubusercontent.com/Reznat7/Gadionovka666/main/music/";
-        
-        // Установка первой песни
         audio.src = baseUrl + encodeURIComponent(songs[currentTrack]);
-
         const container = document.getElementById('effect-container');
 
         function createSpark(x, y, color) {
@@ -293,39 +176,15 @@
         }
 
         const effects = [
-            function rain() {
-                for(let i=0; i<60; i++) {
-                    let r = document.createElement('div'); r.className = 'particle';
-                    r.style.width = '2px'; r.style.height = '20px'; r.style.background = '#00f2ff';
-                    r.style.left = Math.random()*100 + '%'; r.style.top = '-20px';
-                    r.style.animation = `fall ${0.5 + Math.random()}s linear infinite`;
-                    container.appendChild(r);
-                }
-            },
-            function meteors() {
-                for(let i=0; i<12; i++) {
-                    let m = document.createElement('div'); m.className = 'particle';
-                    m.style.width = '4px'; m.style.height = '80px';
-                    m.style.background = 'linear-gradient(to bottom, transparent, #ff0055)';
-                    m.style.left = Math.random()*100 + '%'; m.style.top = '-100px';
-                    m.style.animation = `fall 4s linear infinite`; m.style.animationDelay = Math.random()*4+'s';
-                    m.style.transform = 'rotate(-45deg)'; container.appendChild(m);
-                }
-            },
-            function disco() {
-                let d = document.createElement('div'); d.textContent = '🕺';
-                d.style.position = 'absolute'; d.style.bottom = '10px'; d.style.fontSize = '100px';
-                d.style.left = '45%'; d.style.animation = 'blink 0.5s infinite';
-                container.appendChild(d);
-            },
+            function rain() { for(let i=0; i<60; i++) { let r = document.createElement('div'); r.className = 'particle'; r.style.width = '2px'; r.style.height = '20px'; r.style.background = '#00f2ff'; r.style.left = Math.random()*100 + '%'; r.style.top = '-20px'; r.style.animation = `fall ${0.5 + Math.random()}s linear infinite`; container.appendChild(r); } },
+            function meteors() { for(let i=0; i<12; i++) { let m = document.createElement('div'); m.className = 'particle'; m.style.width = '4px'; m.style.height = '80px'; m.style.background = 'linear-gradient(to bottom, transparent, #ff0055)'; m.style.left = Math.random()*100 + '%'; m.style.top = '-100px'; m.style.animation = `fall 4s linear infinite`; m.style.animationDelay = Math.random()*4+'s'; m.style.transform = 'rotate(-45deg)'; container.appendChild(m); } },
+            function disco() { let d = document.createElement('div'); d.textContent = '🕺'; d.style.position = 'absolute'; d.style.bottom = '10px'; d.style.fontSize = '100px'; d.style.left = '45%'; d.style.animation = 'blink 0.5s infinite'; container.appendChild(d); },
             function neonLaser() {
                 const colors = ['#00f2ff','#ff00e0','#00ff00','#ffff00','#ff4500','#7b00ff','#0066ff','#ff0055','#00ffff','#ff00aa','#ccff00','#00ffcc'];
                 const beams = [];
                 for(let i=0; i<12; i++) {
-                    const el = document.createElement('div'); el.className = 'laser-ptr';
-                    el.style.background = colors[i]; el.style.boxShadow = `0 0 10px ${colors[i]}`;
-                    container.appendChild(el);
-                    beams.push({ el, col: colors[i], x: Math.random()*container.clientWidth, y: Math.random()*container.clientHeight, dx: (Math.random()-0.5)*10, dy: (Math.random()-0.5)*10 });
+                    const el = document.createElement('div'); el.className = 'laser-ptr'; el.style.background = colors[i]; el.style.boxShadow = `0 0 10px ${colors[i]}`; container.appendChild(el);
+                    beams.push({ el, col: colors[i], x: Math.random()*window.innerWidth, y: Math.random()*150, dx: (Math.random()-0.5)*10, dy: (Math.random()-0.5)*10 });
                 }
                 function anim() {
                     beams.forEach(b => {
@@ -340,38 +199,18 @@
             }
         ];
 
-        function changeMode() {
-            container.innerHTML = ''; cancelAnimationFrame(loopAnim);
-            effects[Math.floor(Math.random()*effects.length)]();
-        }
-
+        function changeMode() { container.innerHTML = ''; cancelAnimationFrame(loopAnim); effects[Math.floor(Math.random()*effects.length)](); }
         const seekBar = document.getElementById('seek-bar'), currTimeLabel = document.getElementById('current-time'), durTimeLabel = document.getElementById('duration-time');
         audio.onended = () => nextTrack();
         audio.onloadedmetadata = () => durTimeLabel.textContent = formatTime(audio.duration);
         audio.ontimeupdate = () => { if(!isNaN(audio.duration)){ seekBar.value = (audio.currentTime/audio.duration)*100; currTimeLabel.textContent = formatTime(audio.currentTime); } };
         seekBar.oninput = () => { if(!isNaN(audio.duration)) audio.currentTime = (seekBar.value/100)*audio.duration; };
         function formatTime(s) { let m=Math.floor(s/60), sc=Math.floor(s%60); return (m<10?"0"+m:m)+":"+(sc<10?"0"+sc:sc); }
-        
-        function toggleMusic() { 
-            const btn=document.getElementById('play-btn'); 
-            if(isPlaying){ audio.pause(); btn.textContent="ИГРАТЬ 🎶"; } 
-            else { audio.play().catch(()=>{}); btn.textContent="ПАУЗА ⏸"; }
-            isPlaying=!isPlaying; 
-        }
+        function toggleMusic() { const btn=document.getElementById('play-btn'); if(isPlaying){ audio.pause(); btn.textContent="ИГРАТЬ 🎶"; } else { audio.play().catch(()=>{}); btn.textContent="ПАУЗА ⏸"; } isPlaying=!isPlaying; }
         function toggleShuffle() { isShuffle = !isShuffle; document.getElementById('shuffle-btn').classList.toggle('active'); }
-        function nextTrack() { 
-            if(isShuffle) currentTrack = Math.floor(Math.random()*songs.length); 
-            else currentTrack = (currentTrack+1)%songs.length; 
-            switchTrack(); 
-        }
+        function nextTrack() { if(isShuffle) currentTrack = Math.floor(Math.random()*songs.length); else currentTrack = (currentTrack+1)%songs.length; switchTrack(); }
         function prevTrack() { currentTrack = (currentTrack-1+songs.length)%songs.length; switchTrack(); }
-        function switchTrack() { 
-            audio.pause(); 
-            audio.src = baseUrl + encodeURIComponent(songs[currentTrack]);
-            audio.load(); 
-            if(isPlaying) audio.play().catch(()=>{}); 
-            document.getElementById('track-info').textContent = `ТРЕК: ${currentTrack+1} / ${songs.length}`; 
-        }
+        function switchTrack() { audio.pause(); audio.src = baseUrl + encodeURIComponent(songs[currentTrack]); audio.load(); if(isPlaying) audio.play().catch(()=>{}); document.getElementById('track-info').textContent = `ТРЕК: ${currentTrack+1} / ${songs.length}`; }
 
         const activities = ["Идём за шаурмой 🌯", "Сидим дома 🏠", "Идём на компы 🖥️", "Сгоняем в Лопатинский сад 🌳", "Идём кататься на лясиках🚲", "Идём в «Тарелку» 🍽️", "Идём гонять в Уно 🃏", "Идём бахнуть по кофе ☕", "Идём в боулинг или бильярд 🎳", "Идём кормить уток (или голубей) 🦆", "Залипнем в чат-рулетку 💻", "Сгоняем в клуб 🕺", "Идём слушать хиты 🎵", "Идём делать кринж-фотосессию 📸", "Идём прошвырнуться в магаз 🛍️", "Гоу в киноху 🍿", "Идём за чебуреками 🥟", "Берём семечки и на лавку 🌻", "Го на крепостную стену 🏰", "Идём искать заброшки 🏚️", "Го в настольный теннис 🏓", "Просто пошатаемся по району 👟", "Идём на вокзал смотреть на поезда 🚂", "гоу закажим суши или пиццу и глянем фельмец📽"];
         const fatePhrases = ["«Стопудово!» ✅", "«Звучит как план!» 🤝", "«Да, действуй!» 🔥", "«Это лучший вариант» ✨", "«Шансы 100%» 📈", "«База, надо делать» 🗿", "«Пушка-гонка, делай!» 🏎️", "«Одобряю, летим!» 🚀", "«Даже не думай!» ⛔", "«Плохая затея» 🛑", "«Лучше не надо...» ❌", "«Звучит как кринж» 😬", "«Твоя интуиция тебя обманывает» 🧠", "«Сегодня точно не твой день» ☁️", "«Забей, оно того не стоит» 🙅‍♂️", "«Спроси позже...» ⏳", "«50 на 50» ⚖️", "«Попробуй ещё раз» 🔄", "«Слишком много хочешь знать» 🤫", "«Спроси у того, кто сидит справа» 👉", "«Подумай ещё 5 минут» 🤔", "«Сейчас не лучший момент» 🌚", "«Кинь монетку, я в замешательстве» 🪙", "«А ты сам как думаешь?» 🤨", "«Рискни, жизнь одна!» 🎡", "«Да, но только если сейчас день разрешит» 😎", "«Мой ответ: шаурма» 🌯"];
@@ -384,24 +223,13 @@
             setTimeout(() => {
                 res.textContent = text; res.classList.add('show', styleClass);
                 cd.classList.add('show', 'pulse'); let timeLeft = 5; cd.textContent = timeLeft;
-                countInterval = setInterval(() => { 
-                    timeLeft--; cd.textContent = timeLeft; 
-                    cd.classList.remove('pulse'); void cd.offsetWidth; cd.classList.add('pulse');
-                    if(timeLeft <= 0) clearInterval(countInterval); 
-                }, 1000);
+                countInterval = setInterval(() => { timeLeft--; cd.textContent = timeLeft; cd.classList.remove('pulse'); void cd.offsetWidth; cd.classList.add('pulse'); if(timeLeft <= 0) clearInterval(countInterval); }, 1000);
                 hideTimeout = setTimeout(() => { res.classList.remove('show'); cd.classList.remove('show'); }, 5000);
             }, 50);
         }
         function showRandomPhrase() { displayResult(activities[Math.floor(Math.random()*activities.length)], 'fire-style'); }
         function showFate() { displayResult(fatePhrases[Math.floor(Math.random()*fatePhrases.length)], 'magic-style'); }
-        
-        function toggleGarland() { 
-            const nodes = document.querySelectorAll('.garland-node');
-            nodes.forEach(n => { n.classList.toggle('on'); n.classList.toggle('off'); });
-            horrorSound.currentTime = 0; 
-            horrorSound.play().catch(() => {});
-        }
-        
+        function toggleGarland() { const nodes = document.querySelectorAll('.garland-node'); nodes.forEach(n => { n.classList.toggle('on'); n.classList.toggle('off'); }); horrorSound.currentTime = 0; horrorSound.play().catch(()=>{}); }
         window.onload = changeMode;
     </script>
 </body>
