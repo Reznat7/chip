@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gadionovka 666 - Версия 13</title>
+    <title>Gadionovka 666 - Версия 14</title>
     <style>
         :root {
             --primary: #ff4d4d;
@@ -20,7 +20,6 @@
             color: var(--primary);
             font-weight: bold;
             font-size: 1.5em;
-            z-index: 999;
         }
 
         body {
@@ -44,12 +43,13 @@
             width: 100%;
             text-align: center;
             position: relative;
-            border: 1px solid #444;
+            border: 2px solid #444;
         }
 
-        h1 { color: var(--primary); margin-bottom: 10px; }
+        h1 { color: var(--primary); margin-bottom: 5px; text-transform: uppercase; }
         .progress { font-size: 0.9em; color: #888; margin-bottom: 20px; }
         
+        /* ВОПРОСЫ КРАСНОГО ЦВЕТА */
         .question { 
             font-size: 1.3em; 
             margin-bottom: 25px; 
@@ -75,9 +75,10 @@
 
         #result { display: none; }
         .diagnosis-title { color: var(--primary); font-size: 2em; margin-top: 15px; font-weight: bold; }
-        .description { font-style: italic; margin: 20px 0; line-height: 1.6; color: #ddd; }
+        .description { font-style: italic; margin: 15px 0; line-height: 1.6; color: #ddd; }
         
-        .char-btn {
+        /* КНОПКА ПЕРСОНАЖА */
+        .reveal-btn {
             background-color: var(--primary);
             color: white;
             border: none;
@@ -87,35 +88,54 @@
             border-radius: 50px;
             cursor: pointer;
             width: 100%;
-            margin: 15px 0;
-            transition: 0.3s;
-        }
-
-        #char-image-container {
-            display: none;
             margin: 20px 0;
         }
 
-        #char-img {
-            width: 100%;
-            max-width: 250px;
-            border-radius: 15px;
-            border: 3px solid var(--primary);
-            background-color: #333;
+        /* КОНТЕЙНЕР ДЛЯ ЭМОДЗИ */
+        #emoji-portrait {
+            display: none;
+            font-size: 100px; /* Гигантский размер */
+            margin: 20px 0;
+            background: #333;
+            border-radius: 50%;
+            width: 150px;
+            height: 150px;
+            line-height: 150px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 4px solid var(--primary);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .restart-btn { background: none; border: 1px solid #666; color: #888; margin-top: 15px; padding: 12px; border-radius: 12px; cursor: pointer; width: 100%; }
+        @keyframes popIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .share-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            width: 100%;
+            margin-top: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .restart-btn { background: none; border: 1px solid #666; color: #888; margin-top: 20px; padding: 10px; border-radius: 10px; cursor: pointer; width: 100%; }
     </style>
 </head>
 <body>
 
 <div id="quiz-container">
-    <div class="ver-indicator">13</div>
+    <div class="ver-indicator">14</div>
     
     <div id="quiz-ui">
         <h1>Gadionovka 666</h1>
         <div class="progress" id="progress">Вопрос 1 из 10</div>
-        <div class="question" id="qText">Запуск...</div>
+        <div class="question" id="qText">Загрузка...</div>
         <div class="options" id="oCont"></div>
     </div>
 
@@ -124,14 +144,13 @@
         <div class="diagnosis-title" id="diag-title"></div>
         <div class="description" id="diag-desc"></div>
         
-        <button class="char-btn" id="showCharBtn" onclick="revealCharacter()">
+        <button class="reveal-btn" id="revBtn" onclick="showPortrait()">
             Этот персонаж похож на вас
         </button>
 
-        <div id="char-image-container">
-            <img id="char-img" src="" alt="Ваш герой">
-        </div>
+        <div id="emoji-portrait"></div>
 
+        <button class="share-btn" onclick="copyResult()">Скопировать для чата 666</button>
         <button class="restart-btn" onclick="location.reload()">Пройти еще раз</button>
     </div>
 </div>
@@ -139,8 +158,8 @@
 <script>
     let currentStep = 0;
     let totalScore = 0;
-    let currentImgLinks = [];
-    let linkIndex = 0;
+    let finalEmoji = "";
+    let finalTitle = "";
 
     const questions = [
         { q: "Как ты заходишь в чат Gadionovka 666?", a: ["С ноги и мемом", "Тихо читаю", "Сразу кружочек"] },
@@ -148,50 +167,52 @@
         { q: "Что ты сделаешь, если увидишь привидение?", a: ["Предложу вступить", "Спрошу про Плюс", "Убегу"] },
         { q: "Твой главный талант — это...", a: ["Сон 12 часов", "Странные идеи", "Промолчать"] },
         { q: "Любимая еда для посиделок?", a: ["Острое", "Пицца", "Энергетик"] },
-        { q: "Твой уровень стресса сейчас:", a: ["Капибара", "Нервный тик", "Я и есть стресс"] },
+        { q: "Твой уровень стресса сейчас:", a: ["Капибара", "Нервный тик", "Я и стресс"] },
         { q: "Если бы ты был животным, то каким?", a: ["Ленивец", "Енот", "Кот-арбуз"] },
-        { q: "Твое отношение к дедлайнам:", a: ["Не слышал", "Бегу", "Побеждаю"] },
+        { q: "Твое отношение к дедлайнам:", a: ["Не слышал", "Бегу за ними", "Побеждаю"] },
         { q: "Что ты выберешь?", a: ["Миллион $", "Летать", "Актив в чате"] },
         { q: "Твой девиз по жизни:", a: ["Главное — обед", "Отвага!", "Нормально будет"] }
     ];
 
+    // 30 диагнозов с ЭМОДЗИ (они работают везде!)
     const diagnoses = [
-        { t: "Хронический Хохотун", d: "Вы смеетесь даже над несмешными шутками.", i: ["https://static.wikia.nocookie.net/disney/images/b/bd/Timon_the_Meerkat.png", "https://vignette.wikia.nocookie.net/disney/images/e/e9/Timon_meerkat.png", "https://img.fandom.com/wiki/Timon"] }, 
-        { t: "Магистр Диванных Наук", d: "Вы достигли просветления, не вставая с кровати.", i: ["https://static.wikia.nocookie.net/disney/images/4/4e/Baloo_Jungle_Book.png", "https://vignette.wikia.nocookie.net/disney/images/a/a2/Baloo.png", "https://img.fandom.com/wiki/Baloo"] },
-        { t: "Меметический Барон", d: "Ваш мозг на 80% состоит из картинок с котами.", i: ["https://static.wikia.nocookie.net/disney/images/9/91/Genie_Aladdin.png", "https://vignette.wikia.nocookie.net/disney/images/e/e0/Genie_Aladdin.png", "https://img.fandom.com/wiki/Genie"] },
-        { t: "Профессиональный Душнила (Любя)", d: "Вы знаете, как правильно.", i: ["https://static.wikia.nocookie.net/disney/images/e/ed/Sebastian_Little_Mermaid.png", "https://vignette.wikia.nocookie.net/disney/images/2/22/Sebastian-the-little-mermaid.jpg", "https://img.fandom.com/wiki/Sebastian"] },
-        { t: "Энергетический Вампир-Вегетарианец", d: "Вы питаетесь позитивной энергией.", i: ["https://static.wikia.nocookie.net/disney/images/b/b3/Olaf_Frozen.png", "https://vignette.wikia.nocookie.net/disney/images/d/d3/Olaf_Frozen.png", "https://img.fandom.com/wiki/Olaf"] },
-        { t: "Ниндзя Гадионовки", d: "Вы всё видите, всё знаете, но молчите.", i: ["https://static.wikia.nocookie.net/disney/images/b/bc/Mulan_Disney.png", "https://vignette.wikia.nocookie.net/disney/images/c/c5/Mulan_Disney_Princess.png", "https://img.fandom.com/wiki/Mulan"] },
-        { t: "Король Рандома", d: "Никто не знает, что вы скажете в следующую секунду.", i: ["https://static.wikia.nocookie.net/disney/images/f/f0/Mad_Hatter_Alice.png", "https://vignette.wikia.nocookie.net/disney/images/7/7b/Mad-hatter-disney.jpg", "https://img.fandom.com/wiki/Mad_Hatter"] },
-        { t: "Сверхзвуковой Лентяй", d: "Вы умудряетесь ничего не делать быстро.", i: ["https://static.wikia.nocookie.net/disney/images/d/da/Flash_Zootopia.png", "https://vignette.wikia.nocookie.net/disney/images/b/b3/Flash_Zootopia.png", "https://img.fandom.com/wiki/Flash_Sloth"] },
-        { t: "Амбассадор Чая и Печенек", d: "Любая проблема решается перекусом.", i: ["https://static.wikia.nocookie.net/disney/images/d/d4/Belle_Disney.png", "https://vignette.wikia.nocookie.net/disney/images/8/8b/Belle_Disney_Princess.png", "https://img.fandom.com/wiki/Belle"] },
-        { t: "Генератор Кринжа (Высший уровень)", d: "Ваши шутки настолько плохи, что они гениальны.", i: ["https://static.wikia.nocookie.net/disney/images/d/df/Goofy_Mickey.png", "https://vignette.wikia.nocookie.net/disney/images/8/82/Goofy_transparent.png", "https://img.fandom.com/wiki/Goofy"] },
-        { t: "Цифровой Философ", d: "Вы ищете смысл жизни в уведомлениях.", i: ["https://static.wikia.nocookie.net/disney/images/e/e0/Wall-E.png", "https://vignette.wikia.nocookie.net/disney/images/7/76/Wall-e-profile.png", "https://img.fandom.com/wiki/Wall-E"] },
-        { t: "Верховный Хранитель Секретов", d: "Вам можно доверить всё. Вы надежны.", i: ["https://static.wikia.nocookie.net/disney/images/b/b5/Rafiki_Lion_King.png", "https://vignette.wikia.nocookie.net/disney/images/6/67/Rafiki-The-Lion-King.png", "https://img.fandom.com/wiki/Rafiki"] },
-        { t: "Повелитель Дедлайнов", d: "Адреналин — ваш главный завтрак.", i: ["https://static.wikia.nocookie.net/disney/images/7/7c/White_Rabbit.png", "https://vignette.wikia.nocookie.net/disney/images/c/c4/White_Rabbit.png", "https://img.fandom.com/wiki/White_Rabbit"] },
-        { t: "Легенда Ночного Жора", d: "Холодильник — ваш лучший друг.", i: ["https://static.wikia.nocookie.net/disney/images/0/05/Pumbaa_Lion_King.png", "https://vignette.wikia.nocookie.net/disney/images/1/1a/Pumbaa_The_Lion_King.png", "https://img.fandom.com/wiki/Pumbaa"] },
-        { t: "Мистер Позитив", d: "Вы подозрительно оптимистичны.", i: ["https://static.wikia.nocookie.net/disney/images/c/c5/Mickey_Mouse.png", "https://vignette.wikia.nocookie.net/disney/images/9/99/Mickey_Mouse_Disney.png", "https://img.fandom.com/wiki/Mickey_Mouse"] },
-        { t: "Маг Социальных Сетей", d: "Ваш телефон — продолжение вашей руки.", i: ["https://static.wikia.nocookie.net/disney/images/2/20/Rapunzel_Disney.png", "https://vignette.wikia.nocookie.net/disney/images/6/65/Rapunzel_Disney_Princess.png", "https://img.fandom.com/wiki/Rapunzel"] },
-        { t: "Космический Путешественник", d: "Часто витаете в облаках.", i: ["https://static.wikia.nocookie.net/disney/images/4/4c/Buzz_lightyear.png", "https://vignette.wikia.nocookie.net/disney/images/7/74/Buzz-lightyear-toy-story.png", "https://img.fandom.com/wiki/Buzz_Lightyear"] },
-        { t: "Главный По Тарелочкам", d: "Вы знаете, где самая вкусная еда.", i: ["https://static.wikia.nocookie.net/disney/images/0/07/Remy_Ratatouille.png", "https://vignette.wikia.nocookie.net/disney/images/a/a8/Remy_Ratatouille.png", "https://img.fandom.com/wiki/Remy"] },
-        { t: "Интроверт-Экстремал", d: "Вы любите людей на расстоянии.", i: ["https://static.wikia.nocookie.net/disney/images/3/3a/Quasimodo.png", "https://vignette.wikia.nocookie.net/disney/images/4/4e/Quasimodo-hunchback-of-notre-dame.jpg", "https://img.fandom.com/wiki/Quasimodo"] },
-        { t: "Техно-Шаман", d: "Вы умеете договариваться с техникой.", i: ["https://static.wikia.nocookie.net/disney/images/7/75/Stitch_Lilo.png", "https://vignette.wikia.nocookie.net/disney/images/5/51/Stitch_Disney.png", "https://img.fandom.com/wiki/Stitch"] },
-        { t: "Мистический Соня", d: "Ваши сны интереснее, чем реальность.", i: ["https://static.wikia.nocookie.net/disney/images/f/f6/Aurora_Disney.png", "https://vignette.wikia.nocookie.net/disney/images/1/1d/Aurora_Disney_Princess.png", "https://img.fandom.com/wiki/Aurora"] },
-        { t: "Мастер Переобувания", d: "Гений дипломатии.", i: ["https://static.wikia.nocookie.net/disney/images/3/30/Kuzco.png", "https://vignette.wikia.nocookie.net/disney/images/4/4c/Kuzco-emperors-new-groove.jpg", "https://img.fandom.com/wiki/Kuzco"] },
-        { t: "Охотник за Акциями", d: "Вы знаете, где скидки.", i: ["https://static.wikia.nocookie.net/disney/images/7/7d/Scrooge_McDuck.png", "https://vignette.wikia.nocookie.net/disney/images/5/54/Scrooge_McDuck.png", "https://img.fandom.com/wiki/Scrooge_McDuck"] },
-        { t: "Душа Гадионовки", d: "Без вас этот чат был бы просто буквами.", i: ["https://static.wikia.nocookie.net/disney/images/4/4c/Simba_Lion_King.png", "https://vignette.wikia.nocookie.net/disney/images/b/bc/Simba_The_Lion_King.png", "https://img.fandom.com/wiki/Simba"] },
-        { t: "Скрытый Миллионер", d: "В душе у вас золото.", i: ["https://static.wikia.nocookie.net/disney/images/4/47/Robin_Hood.png", "https://vignette.wikia.nocookie.net/disney/images/9/9b/Robin_Hood_Disney.jpg", "https://img.fandom.com/wiki/Robin_Hood"] },
-        { t: "Пророк Переписок", d: "Вы печатаете ответ еще до вопроса.", i: ["https://static.wikia.nocookie.net/disney/images/2/23/Alice_Wonderland.png", "https://vignette.wikia.nocookie.net/disney/images/e/e0/Alice_Alice_in_Wonderland.png", "https://img.fandom.com/wiki/Alice"] },
-        { t: "Детектив Мемов", d: "Можете найти оригинал любого видео.", i: ["https://static.wikia.nocookie.net/disney/images/e/e9/Gadget_Hackwrench.png", "https://vignette.wikia.nocookie.net/disney/images/d/df/Gadget_Hackwrench.png", "https://img.fandom.com/wiki/Gadget_Hackwrench"] },
-        { t: "Ультра-Миротворец", d: "Разруливаете конфликты одной фразой.", i: ["https://static.wikia.nocookie.net/disney/images/2/2a/Pocahontas_Disney.png", "https://vignette.wikia.nocookie.net/disney/images/5/5c/Pocahontas_Disney_Princess.png", "https://img.fandom.com/wiki/Pocahontas"] },
-        { t: "Вечный Студент", d: "Вы каждый день узнаете новое.", i: ["https://static.wikia.nocookie.net/disney/images/4/47/Milo_Thatch.png", "https://vignette.wikia.nocookie.net/disney/images/7/7e/Milo_Thatch.png", "https://img.fandom.com/wiki/Milo_Thatch"] },
-        { t: "Анархист-Одуванчик", d: "Выглядите мило, но готовы захватить мир.", i: ["https://static.wikia.nocookie.net/disney/images/0/00/Donald_Duck.png", "https://vignette.wikia.nocookie.net/disney/images/2/23/Donald_Duck_Disney.png", "https://img.fandom.com/wiki/Donald_Duck"] }
+        { t: "Хронический Хохотун", d: "Вы смеетесь даже над несмешными шутками. Ваша аура исцеляет.", e: "😂" },
+        { t: "Магистр Диванных Наук", d: "Вы достигли просветления, не вставая с кровати.", e: "🛋️" },
+        { t: "Меметический Барон", d: "Ваш мозг на 80% состоит из картинок с котами.", e: "😼" },
+        { t: "Профессиональный Душнила", d: "Вы знаете, как правильно, и любите это объяснять.", e: "😤" },
+        { t: "Энергетический Вампир-Вегетарианец", d: "Вы питаетесь только позитивной энергией друзей.", e: "🥦" },
+        { t: "Ниндзя Гадионовки", d: "Вы всё видите, всё знаете, но молчите в чате.", e: "🥷" },
+        { t: "Король Рандома", d: "Никто не знает, что вы скажете в следующую секунду.", e: "🎲" },
+        { t: "Сверхзвуковой Лентяй", d: "Вы умудряетесь ничего не делать очень быстро.", e: "🦥" },
+        { t: "Амбассадор Чая и Печенек", d: "Любая проблема решается для вас перекусом.", e: "🍪" },
+        { t: "Генератор Кринжа", d: "Ваши шутки настолько плохи, что они гениальны.", e: "🤡" },
+        { t: "Цифровой Философ", d: "Вы ищете смысл жизни в уведомлениях телефона.", e: "📱" },
+        { t: "Верховный Хранитель Секретов", d: "Вам можно доверить всё. Вы надежны как сейф.", e: "🤐" },
+        { t: "Повелитель Дедлайнов", d: "Вы живете на грани. Адреналин — ваш завтрак.", e: "🧨" },
+        { t: "Легенда Ночного Жора", d: "Холодильник — ваш лучший друг после полуночи.", e: "🍗" },
+        { t: "Мистер Позитив", d: "Вы настолько оптимистичны, что это подозрительно.", e: "☀️" },
+        { t: "Маг Социальных Сетей", d: "Вы знаете о друзьях больше, чем они сами.", e: "🤳" },
+        { t: "Космический Путешественник", d: "Часто витаете в облаках. Там красиво.", e: "👨‍🚀" },
+        { t: "Главный По Тарелочкам", d: "Вы всегда знаете, где самая вкусная еда.", e: "🍝" },
+        { t: "Интроверт-Экстремал", d: "Вы любите людей, но на расстоянии 5 км.", e: "🏚️" },
+        { t: "Техно-Шаман", d: "У вас всё работает силой мысли (иногда).", e: "🛠️" },
+        { t: "Мистический Соня", d: "Ваши сны интереснее, чем реальность.", e: "😴" },
+        { t: "Мастер Переобувания", d: "Гений дипломатии и смены мнений.", e: "👟" },
+        { t: "Охотник за Акциями", d: "Вы знаете, где скидки и бесплатная пицца.", e: "💰" },
+        { t: "Душа Гадионовки", d: "Без вас этот чат был бы просто буквами.", e: "❤️" },
+        { t: "Скрытый Миллионер", d: "Вы выглядите скромно, но в душе — золото.", e: "💎" },
+        { t: "Пророк Переписок", d: "Вы печатаете ответ еще до вопроса.", e: "🔮" },
+        { t: "Детектив Мемов", d: "Можете найти оригинал любого видео за миг.", e: "🕵️" },
+        { t: "Ультра-Миротворец", d: "Разруливаете конфликты одной фразой.", e: "🕊️" },
+        { t: "Вечный Студент", d: "Вы каждый день узнаете новое и тут же забываете.", e: "🎓" },
+        { t: "Анархист-Одуванчик", d: "Выглядите мило, но готовы захватить мир.", e: "😈" }
     ];
 
     function startQuiz() {
         const qText = document.getElementById('qText');
         const oCont = document.getElementById('oCont');
         const prog = document.getElementById('progress');
+
         if (currentStep >= 10) {
             document.getElementById('quiz-ui').style.display = 'none';
             document.getElementById('result').style.display = 'block';
@@ -200,13 +221,16 @@
             const res = diagnoses[idx];
             document.getElementById('diag-title').innerText = res.t;
             document.getElementById('diag-desc').innerText = res.d;
-            currentImgLinks = res.i;
+            finalEmoji = res.e;
+            finalTitle = res.t;
             return;
         }
+
         const q = questions[currentStep];
         prog.innerText = "Вопрос " + (currentStep + 1) + " из 10";
         qText.innerText = q.q;
         oCont.innerHTML = '';
+        
         q.a.forEach((ans, i) => {
             const b = document.createElement('button');
             b.className = 'opt-btn';
@@ -216,17 +240,18 @@
         });
     }
 
-    function revealCharacter() {
-        const btn = document.getElementById('showCharBtn');
-        const imgCont = document.getElementById('char-image-container');
-        const imgTag = document.getElementById('char-img');
-        
-        // Берем ссылку из массива по очереди
-        imgTag.src = currentImgLinks[linkIndex];
-        linkIndex = (linkIndex + 1) % 3; // Переключаем 0 -> 1 -> 2 -> 0
+    function showPortrait() {
+        document.getElementById('revBtn').style.display = 'none';
+        const port = document.getElementById('emoji-portrait');
+        port.innerText = finalEmoji;
+        port.style.display = 'block';
+    }
 
-        btn.innerText = "Не видишь кто ты? Нажми еще";
-        imgCont.style.display = 'block';
+    function copyResult() {
+        const text = "Мой диагноз в Gadionovka 666: " + finalTitle + " " + finalEmoji + "\nУзнай свой тут: " + window.location.href;
+        navigator.clipboard.writeText(text).then(() => {
+            alert("Результат скопирован! Вставляй в чат друзей.");
+        });
     }
 
     startQuiz();
