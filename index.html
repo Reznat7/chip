@@ -34,9 +34,9 @@
             text-align: center;
         }
 
-        h1 { color: var(--primary); margin-bottom: 5px; }
+        h1 { color: var(--primary); margin-bottom: 10px; }
         .progress { font-size: 0.9em; color: #888; margin-bottom: 20px; }
-        .question { font-size: 1.2em; margin-bottom: 25px; min-height: 50px; }
+        .question { font-size: 1.2em; margin-bottom: 25px; min-height: 60px; }
         .options { display: grid; gap: 15px; }
 
         button {
@@ -53,22 +53,27 @@
         button:hover { background-color: var(--primary); transform: translateY(-2px); }
 
         #result { display: none; }
-        .diagnosis-title { color: var(--primary); font-size: 2em; margin-top: 15px; font-weight: bold; }
+        .diagnosis-title { color: var(--primary); font-size: 1.8em; margin-top: 15px; font-weight: bold; }
         .description { font-style: italic; margin: 20px 0; line-height: 1.6; color: #ccc; }
-        
-        .song-info { margin-top: 25px; padding: 15px; background: #222; border-radius: 10px; }
-        .song-label { font-size: 0.9em; color: var(--primary); margin-bottom: 10px; display: block; }
-        
-        .backup-btn {
-            display: inline-block;
-            margin-top: 15px;
-            font-size: 0.8em;
-            color: #777;
-            text-decoration: none;
-            border-bottom: 1px dashed #777;
+
+        /* Анимированная надпись */
+        .animated-song-label {
+            font-weight: bold;
+            font-size: 1.1em;
+            display: block;
+            margin-top: 20px;
+            animation: rainbow 3s infinite;
         }
 
-        .restart-btn { background: none; border: 1px solid var(--primary); color: var(--primary); margin-top: 25px; width: 100%; }
+        @keyframes rainbow {
+            0% { color: #ff4d4d; }
+            25% { color: #f7d358; }
+            50% { color: #4dff88; }
+            75% { color: #4d94ff; }
+            100% { color: #ff4d4d; }
+        }
+
+        .restart-btn { background: none; border: 1px solid var(--primary); color: var(--primary); margin-top: 25px; }
     </style>
 </head>
 <body>
@@ -86,61 +91,60 @@
         <div class="diagnosis-title" id="diag-title"></div>
         <div class="description" id="diag-desc"></div>
         
-        <div class="song-info">
-            <span class="song-label">Это песня к вашему диагнозу:</span>
-            <audio id="audio-player" controls style="width: 100%;"></audio>
-            <a id="backup-url" class="backup-btn" target="_blank">Резервная ссылка (если не играет)</a>
-        </div>
+        <span class="animated-song-label">Это песня к вашему диагнозу:</span>
+        <audio id="audio-player" preload="auto"></audio>
 
         <button class="restart-btn" onclick="location.reload()">Пройти еще раз</button>
     </div>
 </div>
 
 <script>
+    const audio = document.getElementById('audio-player');
+    
     const questions = [
         { q: "Как ты заходишь в чат Gadionovka 666?", a: ["С ноги и мемом", "Тихо читаю, что вы тут настрочили", "Сразу кидаю кружочек"] },
         { q: "Твое идеальное состояние в субботу вечером:", a: ["Горизонтальное", "Турбо-режим", "Не помню, было весело"] },
-        { q: "Что ты сделаешь, если увидишь привидение?", a: ["Предложу вступить в чат", "Спрошу, есть ли у него подписка на Плюс", "Убегу, роняя тапки"] },
+        { q: "Что ты сделаешь, если увидишь привидение?", a: ["Предложу вступить в чат", "Спрошу про подписку на Плюс", "Убегу, роняя тапки"] },
         { q: "Твой главный талант — это...", a: ["Сон 12 часов подряд", "Генерация странных идей", "Умение вовремя промолчать"] },
-        { q: "Любимая еда для посиделок?", a: ["Что-то острое, как шутки админа", "Пицца — классика", "Энергетик и надежда на лучшее"] },
+        { q: "Любимая еда для посиделок?", a: ["Что-то острое, как шутки админа", "Пицца — классика", "Энергетик и надежда"] },
         { q: "Твой уровень стресса сейчас:", a: ["Спокоен как капибара", "Нервный тик левого глаза", "Я и есть стресс"] },
         { q: "Если бы ты был животным, то каким?", a: ["Ленивцем-интеллектуалом", "Енотом-полоскуном", "Кот-арбуз"] },
-        { q: "Твое отношение к дедлайнам:", a: ["Дедлайн? Не, не слышал", "Бегу за ними, но они быстрее", "Побеждаю в последнюю секунду"] },
-        { q: "Что ты выберешь?", a: ["Миллион долларов", "Способность летать", "Чтобы в Гадионовке всегда был актив"] },
+        { q: "Твое отношение к дедлайнам:", a: ["Дедлайн? Не, не слышал", "Бегу за ними", "Побеждаю в последнюю секунду"] },
+        { q: "Что ты выберешь?", a: ["Миллион долларов", "Способность летать", "Чтобы в чате всегда был актив"] },
         { q: "Твой девиз по жизни:", a: ["Главное — не участие, а обед", "Слабоумие и отвага!", "Нормально делай — нормально будет"] }
     ];
 
     const diagnoses = [
-        { t: "Хронический Хохотун", d: "Вы смеетесь даже над несмешными шутками. Ваша аура исцеляет грусть.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125904" }, // Hakuna Matata
-        { t: "Магистр Диванных Наук", d: "Вы достигли просветления, не вставая с кровати.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125902" }, // Bare Necessities
-        { t: "Меметический Барон", d: "Ваш мозг на 80% состоит из картинок с котами.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125910" }, // Friend Like Me
-        { t: "Профессиональный Душнила", d: "Вы знаете, как правильно, и не боитесь об этом сказать.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125916" }, // Be Our Guest
-        { t: "Энергетический Вампир-Вегетарианец", d: "Вы питаетесь только позитивной энергией.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125898" }, // Under the Sea
-        { t: "Ниндзя Гадионовки", d: "Вы всё видите, всё знаете, но молчите. Появляетесь внезапно.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125908" }, // I'll Make a Man
-        { t: "Король Рандома", d: "Никто не знает, что вы скажете в следующую секунду.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125911" }, // Unbirthday
-        { t: "Сверхзвуковой Лентяй", d: "Вы умудряетесь ничего не делать с невероятной скоростью.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125914" }, // Heigh-Ho
-        { t: "Амбассадор Чая и Печенек", d: "Любая проблема решается для вас перекусом.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125920" }, // Beauty and the Beast
-        { t: "Генератор Кринжа", d: "Ваши шутки настолько плохи, что они гениальны.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=612196" }, // Zero to Hero
-        { t: "Цифровой Философ", d: "Вы ищете смысл жизни в уведомлениях.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125900" }, // Circle of Life
-        { t: "Верховный Хранитель Секретов", d: "Вам можно доверить всё. Вы надежны.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125906" }, // Can You Feel
-        { t: "Повелитель Дедлайнов", d: "Вы живете на грани. Адреналин — ваш главный завтрак.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=612198" }, // Go the Distance
-        { t: "Легенда Ночного Жора", d: "Холодильник — ваш лучший друг после полуночи.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125916" }, 
-        { t: "Мистер Позитив", d: "Вы настолько оптимистичны, что это подозрительно.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125912" }, 
-        { t: "Маг Социальных Сетей", d: "Ваш телефон — продолжение вашей руки.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125896" }, 
-        { t: "Космический Путешественник", d: "Часто витаете в облаках. Там красиво.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125918" }, 
-        { t: "Главный По Тарелочкам", d: "Вы всегда знаете, где самая вкусная еда.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125922" }, 
-        { t: "Интроверт-Экстремал", d: "Вы любите людей, но только если они далеко.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125924" }, // Let It Go
-        { t: "Техно-Шаман", d: "Вы умеете договариваться с техникой.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125926" }, 
-        { t: "Мистический Соня", d: "Ваши сны интереснее, чем реальность.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125928" }, 
-        { t: "Мастер Переобувания", d: "Меняете мнение за секунду, но аргументированно.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125930" }, 
-        { t: "Охотник за Акциями", d: "Вы знаете, где скидки и бесплатная пицца.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125932" }, 
-        { t: "Душа Гадионовки", d: "Вы — клей, который всех держит в этой группе.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125934" }, 
-        { t: "Скрытый Миллионер", d: "Вы выглядите скромно, но в душе — золото.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125936" }, 
-        { t: "Пророк Переписок", d: "Вы печатаете ответ еще до вопроса.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125938" }, 
-        { t: "Детектив Мемов", d: "Можете найти оригинал любого видео за миг.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125940" }, 
-        { t: "Ультра-Миротворец", d: "Разруливаете любые конфликты одной фразой.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125942" }, 
-        { t: "Вечный Студент", d: "Вы каждый день узнаете что-то новое (и забываете).", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125944" }, 
-        { t: "Анархист-Одуванчик", d: "Выглядите мило, но в душе готовы захватить мир.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125946" }
+        { t: "Хронический Хохотун", d: "Вы смеетесь даже над несмешными шутками. Ваша аура исцеляет грусть.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125904" },
+        { t: "Магистр Диванных Наук", d: "Вы достигли просветления, не вставая с кровати.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125902" },
+        { t: "Меметический Барон", d: "Ваш мозг на 80% состоит из картинок с котами.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125910" },
+        { t: "Профессиональный Душнила (Любя)", d: "Вы знаете, как правильно, и не боитесь об этом сказать.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125916" },
+        { t: "Энергетический Вампир-Вегетарианец", d: "Вы питаетесь только позитивной энергией.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125898" },
+        { t: "Ниндзя Гадионовки", d: "Вы всё видите, всё знаете, но молчите. Появляетесь внезапно.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125908" },
+        { t: "Король Рандома", d: "Никто не знает, что вы скажете в следующую секунду. Даже вы сами.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125911" },
+        { t: "Сверхзвуковой Лентяй", d: "Вы умудряетесь ничего не делать с невероятной скоростью.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125914" },
+        { t: "Амбассадор Чая и Печенек", d: "Любая проблема решается для вас перекусом.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125920" },
+        { t: "Генератор Кринжа (Высший уровень)", d: "Ваши шутки настолько плохи, что они гениальны.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=612196" },
+        { t: "Цифровой Философ", d: "Вы ищете смысл жизни в уведомлениях и паролях от Wi-Fi.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125900" },
+        { t: "Верховный Хранитель Секретов", d: "Вам можно доверить всё. Вы надежны, как швейцарские часы.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125906" },
+        { t: "Повелитель Дедлайнов", d: "Вы живете на грани. Адреналин — ваш главный завтрак.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=612198" },
+        { t: "Легенда Ночного Жора", d: "Холодильник — ваш лучший друг после полуночи.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125916" },
+        { t: "Мистер Позитив", d: "Вы настолько оптимистичны, что это подозрительно.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125912" },
+        { t: "Маг Социальных Сетей", d: "Ваш телефон — продолжение вашей руки.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125896" },
+        { t: "Космический Путешественник", d: "Часто витаете в облаках. Там красиво.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125918" },
+        { t: "Главный По Тарелочкам", d: "Вы всегда знаете, где самая вкусная еда.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125922" },
+        { t: "Интроверт-Экстремал", d: "Вы любите людей, но на большом расстоянии.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125924" },
+        { t: "Техно-Шаман", d: "Вы умеете договариваться с техникой силой мысли.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125926" },
+        { t: "Мистический Соня", d: "Ваши сны интереснее, чем большинство фильмов.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125928" },
+        { t: "Мастер Переобувания", d: "Меняете мнение за секунду, но всегда аргументированно.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125930" },
+        { t: "Охотник за Акциями", d: "Вы знаете, где скидки, кэшбэк и бесплатная еда.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125932" },
+        { t: "Душа Гадионовки", d: "Без вас этот чат был бы просто набором букв.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125934" },
+        { t: "Скрытый Миллионер", d: "Вы выглядите скромно, но в душе у вас золотые горы.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125936" },
+        { t: "Пророк Переписок", d: "Вы печатаете ответ еще до того, как вам задали вопрос.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125938" },
+        { t: "Детектив Мемов", d: "Можете найти оригинал любого видео за 2 секунды.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125940" },
+        { t: "Ультра-Миротворец", d: "Разруливаете любые конфликты одной фразой.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125942" },
+        { t: "Вечный Студент", d: "Вы каждый день узнаете новое, но забываете зачем.", s: "https://www.soundboard.com/handler/Downloadaudio.ashx?id=125944" },
+        { t: "Анархист-Одуванчик", d: "Выглядите мило, но готовы захватить мир.", s: "https://archive.org/download/TVThemeSongsTVThemesChipnDaleRescueRangers/TV%20THEMES%20-%20Disney%27s%20-%20Chip%20%27n%20Dale%27s%20Rescue%20Rangers%20%2880%27s%20Cartoon%29%20%7BSHORT%20EDIT%20FOR%20TV%7D.mp3" }
     ];
 
     let currentStep = 0;
@@ -152,10 +156,15 @@
         document.getElementById('question-text').innerText = q.q;
         const oC = document.getElementById('options-container');
         oC.innerHTML = '';
+        
         q.a.forEach((ans, i) => {
             const b = document.createElement('button');
             b.innerText = ans;
-            b.onclick = () => { totalScore += i; currentStep++; (currentStep < 10) ? showQuestion() : showResult(); };
+            b.onclick = () => {
+                totalScore += i;
+                currentStep++;
+                if (currentStep < 10) { showQuestion(); } else { showResult(); }
+            };
             oC.appendChild(b);
         });
     }
@@ -164,18 +173,17 @@
         document.getElementById('quiz-ui').style.display = 'none';
         document.getElementById('result').style.display = 'block';
         
+        // Расчет индекса для 30 вариантов
         let idx = Math.floor((totalScore / 20) * 29);
         const res = diagnoses[idx];
-        
+
         document.getElementById('diag-title').innerText = res.t;
         document.getElementById('diag-desc').innerText = res.d;
-        
-        const player = document.getElementById('audio-player');
-        player.src = res.s;
-        player.volume = 0.5;
-        player.play().catch(e => console.log("Нужно нажать на плеер вручную"));
-        
-        document.getElementById('backup-url').href = res.s;
+
+        // Настройка и запуск аудио (как в Чип и Дейл)
+        audio.src = res.s;
+        audio.volume = 0.5;
+        audio.play().catch(e => console.error("Ошибка музыки:", e));
     }
 
     showQuestion();
