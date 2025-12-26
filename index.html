@@ -3,120 +3,179 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Чип и Дейл спешат на помощь!</title>
+    <title>Gadionovka 666: Твой Диагноз</title>
     <style>
+        :root {
+            --primary: #ff4d4d;
+            --bg: #1a1a1a;
+            --card: #2d2d2d;
+            --text: #ffffff;
+        }
+
         body {
-            background-color: #f7d358;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
         }
 
-        .container {
+        #quiz-container {
+            background-color: var(--card);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 600px;
+            width: 100%;
             text-align: center;
-            background: white;
-            padding: 40px;
-            border-radius: 30px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-            border: 6px solid #8b4513;
-            max-width: 400px;
         }
 
-        h1 {
-            color: #d32f2f;
-            text-shadow: 2px 2px 0px #f7d358;
-            font-size: 28px;
-        }
+        h1 { color: var(--primary); margin-bottom: 10px; }
+        .progress { font-size: 0.9em; color: #888; margin-bottom: 20px; }
+        .question { font-size: 1.2em; margin-bottom: 25px; min-height: 60px; }
+        .options { display: grid; gap: 15px; }
 
-        .btn-play {
-            background-color: #8b4513;
+        button {
+            background-color: #3d3d3d;
             color: white;
-            border: none;
-            padding: 20px 40px;
-            font-size: 22px;
-            font-weight: bold;
-            border-radius: 50px;
+            border: 2px solid transparent;
+            padding: 15px 20px;
+            border-radius: 10px;
             cursor: pointer;
+            font-size: 1em;
             transition: all 0.3s ease;
-            box-shadow: 0 8px 0 #5d2e0d;
-            margin-top: 20px;
-            outline: none;
         }
 
-        .btn-play:hover {
-            background-color: #a0522d;
-            transform: translateY(-2px);
-        }
+        button:hover { background-color: var(--primary); transform: translateY(-2px); }
 
-        .btn-play:active {
-            transform: translateY(4px);
-            box-shadow: 0 2px 0 #5d2e0d;
-        }
+        #result { display: none; }
+        .diagnosis-title { color: var(--primary); font-size: 1.8em; margin-top: 15px; font-weight: bold; }
+        .description { font-style: italic; margin: 20px 0; line-height: 1.6; color: #ccc; }
+        
+        .backup-link { margin-top: 20px; font-size: 0.85em; color: #777; }
+        .backup-link a { color: var(--primary); text-decoration: none; border-bottom: 1px dashed var(--primary); }
 
-        .status {
-            margin-top: 25px;
-            font-weight: bold;
-            color: #555;
-            min-height: 24px;
-        }
-
-        /* Анимация при игре */
-        .playing {
-            animation: bounce 0.5s infinite alternate;
-        }
-
-        @keyframes bounce {
-            from { transform: scale(1); }
-            to { transform: scale(1.05); }
-        }
+        #player { display: none; }
+        .restart-btn { background: none; border: 1px solid var(--primary); color: var(--primary); margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="container" id="card">
-        <h1>Чип и Дейл спешат на помощь! 🐿️</h1>
-        
-        <button class="btn-play" id="mainBtn" onclick="toggleMusic()">Включить музыку!</button>
-        
-        <p id="statusText" class="status">Штаб готов к вылету!</p>
-
-        <audio id="themeSong" preload="auto">
-            <source src="https://archive.org/download/TVThemeSongsTVThemesChipnDaleRescueRangers/TV%20THEMES%20-%20Disney%27s%20-%20Chip%20%27n%20Dale%27s%20Rescue%20Rangers%20%2880%27s%20Cartoon%29%20%7BSHORT%20EDIT%20FOR%20TV%7D.mp3" type="audio/mpeg">
-            Ваш браузер не поддерживает аудио.
-        </audio>
+<div id="quiz-container">
+    <div id="quiz-ui">
+        <h1>Gadionovka 666</h1>
+        <div class="progress" id="progress">Вопрос 1 из 10</div>
+        <div class="question" id="question-text">Загрузка...</div>
+        <div class="options" id="options-container"></div>
     </div>
 
-    <script>
-        const audio = document.getElementById('themeSong');
-        const statusText = document.getElementById('statusText');
-        const btn = document.getElementById('mainBtn');
-        const card = document.getElementById('card');
-        let isPlaying = false;
+    <div id="result">
+        <h1>Твой диагноз:</h1>
+        <div class="diagnosis-title" id="diag-title"></div>
+        <div class="description" id="diag-desc"></div>
+        
+        <div id="player"></div>
 
-        function toggleMusic() {
-            if (isPlaying) {
-                audio.pause();
-                audio.currentTime = 0;
-                statusText.innerText = "Штаб готов к вылету!";
-                btn.innerText = "Включить музыку!";
-                card.classList.remove('playing');
-            } else {
-                // Попытка воспроизведения
-                audio.play().then(() => {
-                    statusText.innerText = "Спешат на помощь! 🚀";
-                    btn.innerText = "Остановить музыку";
-                    card.classList.add('playing');
-                }).catch(error => {
-                    statusText.innerText = "Ошибка: не удалось загрузить звук 😢";
-                    console.error("Playback error:", error);
-                });
-            }
-            isPlaying = !isPlaying;
-        }
-    </script>
+        <div class="backup-link">
+            Если песня не играет: <a id="backup-url" target="_blank">слушать на YouTube</a>
+        </div>
+
+        <button class="restart-btn" onclick="location.reload()">Пройти еще раз</button>
+    </div>
+</div>
+
+<script>
+    var player;
+    function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+            height: '0', width: '0',
+            events: { 'onReady': function(event) { event.target.setVolume(50); } }
+        });
+    }
+
+    const questions = [
+        { q: "Как ты заходишь в чат Gadionovka 666?", a: ["С ноги и мемом", "Тихо читаю, что вы тут настрочили", "Сразу кидаю кружочек"] },
+        { q: "Твое идеальное состояние в субботу вечером:", a: ["Горизонтальное", "Турбо-режим", "Не помню, было весело"] },
+        { q: "Что ты сделаешь, если увидишь привидение?", a: ["Предложу вступить в чат", "Спрошу, есть ли у него подписка на Плюс", "Убегу, роняя тапки"] },
+        { q: "Твой главный талант — это...", a: ["Сон 12 часов подряд", "Генерация странных идей", "Умение вовремя промолчать"] },
+        { q: "Любимая еда для посиделок?", a: ["Что-то острое, как шутки админа", "Пицца — классика", "Энергетик и надежда на лучшее"] },
+        { q: "Твой уровень стресса сейчас:", a: ["Спокоен как капибара", "Нервный тик левого глаза", "Я и есть стресс"] },
+        { q: "Если бы ты был животным, то каким?", a: ["Ленивцем-интеллектуалом", "Енотом-полоскуном (чужих мозгов)", "Кот-арбуз"] },
+        { q: "Твое отношение к дедлайнам:", a: ["Дедлайн? Не, не слышал", "Бегу за ними, но они быстрее", "Побеждаю в последнюю секунду"] },
+        { q: "Что ты выберешь?", a: ["Миллион долларов", "Способность летать", "Чтобы в Гадионовке всегда был актив"] },
+        { q: "Твой девиз по жизни:", a: ["Главное — не участие, а обед", "Слабоумие и отвага!", "Нормально делай — нормально будет"] }
+    ];
+
+    const diagnoses = [
+        { t: "Хронический Хохотун", d: "Вы смеетесь даже над несмешными шутками. Ваша аура исцеляет грусть.", v: "kaI_6H_o-Xo" },
+        { t: "Магистр Диванных Наук", d: "Вы достигли просветления, не вставая с кровати.", v: "9ogQ0uge06o" },
+        { t: "Меметический Барон", d: "Ваш мозг на 80% состоит из картинок с котами.", v: "grH7f_M_f8U" },
+        { t: "Профессиональный Душнила (Любя)", d: "Вы знаете, как правильно, и не боитесь об этом сказать.", v: "afzmwAKUppU" },
+        { t: "Энергетический Вампир-Вегетарианец", d: "Вы питаетесь только позитивной энергией.", v: "GC_mV1IpjWA" },
+        { t: "Ниндзя Гадионовки", d: "Вы всё видите, всё знаете, но молчите. Появляетесь внезапно.", v: "TVcLIfSC4OE" },
+        { t: "Король Рандома", d: "Никто не знает, что вы скажете в следующую секунду.", v: "l4Xf9S6S6S0" },
+        { t: "Сверхзвуковой Лентяй", d: "Вы умудряетесь ничего не делать с невероятной скоростью.", v: "c6rP-YP4c5I" },
+        { t: "Амбассадор Чая и Печенек", d: "Любая проблема решается для вас перекусом.", v: "W8_Yq9D_1D0" },
+        { t: "Генератор Кринжа (Высший уровень)", d: "Ваши шутки настолько плохи, что они гениальны.", v: "yOL-EJZjmp0" },
+        { t: "Цифровой Философ", d: "Вы ищете смысл жизни в уведомлениях и паролях от Wi-Fi.", v: "hZ1Rb9hC4JY" },
+        { t: "Верховный Хранитель Секретов", d: "Вам можно доверить даже самое сокровенное. Вы надежны.", v: "2b7zS_S_S_S" },
+        { t: "Повелитель Дедлайнов", d: "Вы живете на грани. Адреналин — ваш главный завтрак.", v: "08MeX68O_Yw" },
+        { t: "Легенда Ночного Жора", d: "Холодильник — ваш лучший друг после полуночи.", v: "9N_9N_9N_9N" },
+        { t: "Мистер Позитив", d: "Вы настолько оптимистичны, что это подозрительно. Но нам нравится!", v: "UFatVn7X164" },
+        { t: "Маг Социальных Сетей", d: "Ваш телефон — продолжение вашей руки.", v: "v7v8v9v10v11" },
+        { t: "Космический Путешественник", d: "Часто витаете в облаках. Там красиво, мы понимаем.", v: "7X_7X_7X_7X" },
+        { t: "Главный По Тарелочкам", d: "Вы всегда знаете, где самая вкусная еда без лишних усилий.", v: "qCjW0axL2pQ" },
+        { t: "Интроверт-Экстремал", d: "Вы любите людей, но только если они в другом городе.", v: "pYpS_jHREx0" },
+        { t: "Техно-Шаман", d: "Вы умеете договариваться с техникой силой мысли.", v: "XkU23m6yX04" },
+        { t: "Мистический Соня", d: "Ваши сны интереснее, чем большинство фильмов в кино.", v: "K_PSTT__S_k" },
+        { t: "Мастер Переобувания", d: "Меняете мнение за секунду, но всегда аргументированно.", v: "V1BFLit_S_o" },
+        { t: "Охотник за Акциями", d: "Вы знаете, где скидки, кэшбэк и бесплатная пицца.", v: "8_8_8_8_8_8" },
+        { t: "Душа Гадионовки", d: "Без вас этот чат был бы просто набором букв.", v: "GibiNy4d4gc" },
+        { t: "Скрытый Миллионер", d: "Вы выглядите скромно, но в душе у вас золотые горы.", v: "nMN4JZ8uptA" },
+        { t: "Пророк Переписок", d: "Вы печатаете ответ еще до того, как вам задали вопрос.", v: "L0MK7qz13bU" },
+        { t: "Детектив Мемов", d: "Можете найти оригинал любого видео за 2 секунды.", v: "88X_N_0oVf8" },
+        { t: "Ультра-Миротворец", d: "Разруливаете любые конфликты одной фразой.", v: "xfkkM4iadho" },
+        { t: "Вечный Студент", d: "Вы каждый день узнаете что-то новое, но забываете зачем.", v: "P_P_P_P_P_P" },
+        { t: "Анархист-Одуванчик", d: "Выглядите мило, но в душе готовы захватить мир.", v: "D_D_D_D_D_D" }
+    ];
+
+    let currentStep = 0;
+    let totalScore = 0;
+
+    function showQuestion() {
+        const q = questions[currentStep];
+        document.getElementById('progress').innerText = `Вопрос ${currentStep + 1} из 10`;
+        document.getElementById('question-text').innerText = q.q;
+        const oC = document.getElementById('options-container');
+        oC.innerHTML = '';
+        q.a.forEach((ans, i) => {
+            const b = document.createElement('button');
+            b.innerText = ans;
+            b.onclick = () => { totalScore += i; currentStep++; (currentStep < 10) ? showQuestion() : showResult(); };
+            oC.appendChild(b);
+        });
+    }
+
+    function showResult() {
+        document.getElementById('quiz-ui').style.display = 'none';
+        document.getElementById('result').style.display = 'block';
+        let idx = Math.floor((totalScore / 20) * 29);
+        const res = diagnoses[idx];
+        document.getElementById('diag-title').innerText = res.t;
+        document.getElementById('diag-desc').innerText = res.d;
+        document.getElementById('backup-url').href = "https://www.youtube.com/watch?v=" + res.v;
+        if(player && player.loadVideoById) { player.loadVideoById(res.v); player.playVideo(); }
+    }
+
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.getElementsByTagName('script')[0].parentNode.insertBefore(tag, null);
+    showQuestion();
+</script>
 
 </body>
 </html>
