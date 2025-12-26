@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>GADIONOVKA666 - TEST EDITION</title>
-    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Orbitron:wght@900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
     <style>
         /* --- БАЗОВЫЙ ФОН И СТИЛИ --- */
         :root {
@@ -21,7 +21,7 @@
             background-size: 120px 120px;
             animation: starsBlink 4s ease-in-out infinite alternate;
             color: white; display: flex; flex-direction: column; align-items: center;
-            min-height: 100vh; overflow-x: hidden; font-family: 'Segoe UI', Arial, sans-serif; position: relative;
+            min-height: 100vh; overflow-x: hidden; font-family: 'Orbitron', sans-serif; position: relative;
         }
         @keyframes starsBlink { 0% { opacity: 1; } 100% { opacity: 0.6; } }
 
@@ -43,72 +43,41 @@
         h1.main-title { font-family: 'Creepster', cursive; color: #FFD700; width: 98%; text-align: center; font-size: 12vw; margin: 60px 0 20px; text-transform: uppercase; letter-spacing: 1vw; text-shadow: 4px 4px 0px #4b3b00; z-index: 2; }
 
         /* --- КНОПКИ ГЛАВНЫЕ --- */
-        .btn-base { cursor: pointer; transition: 0.3s; text-transform: uppercase; font-weight: 900; border: none; z-index: 100; margin: 10px; }
-        
+        .btn-base { cursor: pointer; transition: 0.3s; text-transform: uppercase; font-weight: 900; border: none; z-index: 100; margin: 10px; font-family: 'Orbitron', sans-serif; }
         .btn-toggle { background-color: #000; color: #fff; font-size: 20px; padding: 10px 35px; border: 4px solid #00f2ff; box-shadow: 0 0 15px #00f2ff; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); }
+        .btn-test { background: var(--primary); color: white; font-size: 24px; padding: 15px 50px; border-radius: 50px; box-shadow: 0 0 20px var(--primary); animation: pulseBtn 1.5s infinite; }
+        @keyframes pulseBtn { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
-        .btn-test { 
-            background: var(--primary); color: white; font-size: 24px; padding: 15px 50px; border-radius: 50px; 
-            box-shadow: 0 0 20px var(--primary); animation: pulseBtn 1.5s infinite; 
-        }
-        @keyframes pulseBtn {
-            0% { transform: scale(1); box-shadow: 0 0 20px var(--primary); }
-            50% { transform: scale(1.05); box-shadow: 0 0 35px var(--primary); }
-            100% { transform: scale(1); box-shadow: 0 0 20px var(--primary); }
-        }
+        /* --- КОНТЕЙНЕР ТЕСТА --- */
+        #test-overlay { display: none; position: fixed; bottom: 0; left: 0; width: 100%; height: 50vh; z-index: 2000; justify-content: center; align-items: flex-end; }
+        #quiz-container { background-color: var(--card); padding: 25px; border-radius: 20px 20px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,0.9); width: 100%; height: 100%; text-align: center; border: 2px solid #444; border-bottom: none; overflow-y: auto; box-sizing: border-box; }
 
-        /* --- КОНТЕЙНЕР ТЕСТА (НИЖНЯЯ ПОЛОВИНА) --- */
-        #test-overlay {
-            display: none; 
-            position: fixed; 
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 50vh; /* Ровно нижняя половина */
-            z-index: 2000;
-            justify-content: center;
-            align-items: flex-end; 
-        }
+        /* СТИЛЬ ТЕКСТА В ТЕСТЕ */
+        .question { font-size: 2.2em; margin-bottom: 25px; min-height: 60px; color: var(--primary); font-weight: 900; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+        .progress { color: #888; font-size: 1.6em; margin-bottom: 15px; font-weight: bold; }
+        .test-title { color: var(--primary); margin: 5px 0 15px; font-size: 2.5em; text-transform: uppercase; text-shadow: 3px 3px 0px #000; }
 
-        #quiz-container {
-            background-color: var(--card); padding: 25px; border-radius: 20px 20px 0 0; 
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.9); width: 100%; height: 100%;
-            text-align: center; position: relative; border: 2px solid #444; border-bottom: none; color: white;
-            overflow-y: auto; box-sizing: border-box;
-        }
-
-        /* УВЕЛИЧЕННЫЙ ТЕКСТ ВНУТРИ ТЕСТА */
-        .question { font-size: 2em; margin-bottom: 25px; min-height: 60px; color: var(--primary); font-weight: bold; line-height: 1.3; }
         .options { display: grid; gap: 15px; }
-        button.opt-btn { background-color: #3d3d3d; color: white; border: 2px solid transparent; padding: 22px; border-radius: 15px; cursor: pointer; font-size: 1.6em; transition: 0.2s; font-weight: 600; }
-        button.opt-btn:hover { background-color: #444; border-color: var(--primary); }
-        
-        .progress { color: #888; font-size: 1.5em; margin-bottom: 20px; font-weight: bold; }
-        h2.test-title { color: var(--primary); margin: 5px 0 20px; font-size: 2.4em; text-transform: uppercase; }
+        button.opt-btn { background-color: #3d3d3d; color: white; border: 3px solid transparent; padding: 22px; border-radius: 15px; cursor: pointer; font-size: 1.8em; transition: 0.2s; font-weight: 900; font-family: 'Orbitron', sans-serif; text-shadow: 1px 1px 2px #000; }
+        button.opt-btn:hover { background-color: #444; border-color: var(--primary); transform: translateY(-2px); }
 
         #result { display: none; padding-bottom: 30px; }
-        .diagnosis-title { color: var(--primary); font-size: 2.8em; margin-top: 20px; font-weight: bold; }
-        .description { font-style: italic; margin: 20px 0; line-height: 1.5; color: #ddd; font-size: 1.8em; }
+        .diagnosis-title { color: var(--primary); font-size: 3em; margin-top: 20px; font-weight: 900; }
+        .description { font-style: italic; margin: 20px 0; line-height: 1.4; color: #ddd; font-size: 1.9em; }
         
-        .reveal-btn { background-color: var(--primary); color: white; border: none; padding: 25px; font-size: 1.6em; font-weight: bold; border-radius: 50px; cursor: pointer; width: 100%; margin: 25px 0; }
-        
-        #emoji-portrait { display: none; font-size: 120px; background: #333; border-radius: 50%; width: 160px; height: 160px; line-height: 160px; margin: 25px auto; border: 4px solid var(--primary); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .reveal-btn { background-color: var(--primary); color: white; border: none; padding: 25px; font-size: 1.8em; font-weight: bold; border-radius: 50px; cursor: pointer; width: 100%; margin: 25px 0; font-family: 'Orbitron', sans-serif; }
+        #emoji-portrait { display: none; font-size: 130px; background: #333; border-radius: 50%; width: 170px; height: 170px; line-height: 170px; margin: 25px auto; border: 5px solid var(--primary); animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
         
-        .share-btn { background-color: #28a745; color: white; border: none; padding: 20px; border-radius: 15px; width: 100%; cursor: pointer; font-weight: bold; font-size: 1.6em; }
+        .share-btn { background-color: #28a745; color: white; border: none; padding: 20px; border-radius: 15px; width: 100%; cursor: pointer; font-weight: bold; font-size: 1.8em; font-family: 'Orbitron', sans-serif; }
 
         /* АНИМИРОВАННАЯ КНОПКА ЗАКРЫТИЯ */
         .close-test { 
-            background: #444; border: 4px solid var(--primary); color: white; 
-            cursor: pointer; font-size: 1.2em; margin-top: 30px; padding: 15px 40px; 
-            border-radius: 30px; text-transform: uppercase; font-weight: bold;
-            animation: pulseClose 2s infinite ease-in-out;
+            background: #444; border: 4px solid var(--primary); color: white; cursor: pointer; font-size: 1.4em; 
+            margin: 30px auto; padding: 15px 45px; border-radius: 35px; text-transform: uppercase; font-weight: bold;
+            display: block; animation: pulseClose 2s infinite ease-in-out; font-family: 'Orbitron', sans-serif;
         }
-        @keyframes pulseClose {
-            0% { box-shadow: 0 0 0px var(--primary); transform: scale(1); }
-            50% { box-shadow: 0 0 20px var(--primary); transform: scale(1.05); }
-            100% { box-shadow: 0 0 0px var(--primary); transform: scale(1); }
-        }
+        @keyframes pulseClose { 0% { box-shadow: 0 0 0px var(--primary); } 50% { box-shadow: 0 0 20px var(--primary); } 100% { box-shadow: 0 0 0px var(--primary); } }
     </style>
 </head>
 <body>
@@ -129,26 +98,27 @@
                 <div class="progress" id="progress">Вопрос 1 из 10</div>
                 <div class="question" id="qText">Загрузка...</div>
                 <div class="options" id="oCont"></div>
+                <button class="close-test" onclick="closeQuiz()">Закрыть текст</button>
             </div>
 
             <div id="result">
                 <h2 class="test-title">ВАШ ДИАГНОЗ ЭТО...</h2>
                 <div class="diagnosis-title" id="diag-title"></div>
                 <div class="description" id="diag-desc"></div>
-                
                 <button class="reveal-btn" id="revBtn" onclick="showPortrait()">Этот персонаж похож на вас</button>
                 <div id="emoji-portrait"></div>
-
                 <button class="share-btn" onclick="copyResult()">Скопировать результат</button>
                 <button class="opt-btn" style="width:100%; margin-top:20px;" onclick="restartQuiz()">Пройти еще раз</button>
-                
-                <button class="close-test" onclick="closeQuiz()">Закрыть тест</button>
+                <button class="close-test" onclick="closeQuiz()">Закрыть текст</button>
             </div>
         </div>
     </div>
 
     <script>
         const horrorSound = new Audio('https://www.myinstants.com/media/sounds/horror-ghost-sound-effect.mp3');
+        const clickSound = new Audio('https://www.myinstants.com/media/sounds/button-3.mp3');
+        const drumSound = new Audio('https://www.myinstants.com/media/sounds/drum-roll.mp3');
+
         function toggleGarland() { 
             const nodes = document.querySelectorAll('.garland-node');
             nodes.forEach(n => { n.classList.toggle('on'); n.classList.toggle('off'); });
@@ -157,17 +127,15 @@
 
         function openQuiz() {
             document.getElementById('test-overlay').style.display = 'flex';
-            startQuiz();
+            restartQuiz();
         }
 
         function closeQuiz() {
             document.getElementById('test-overlay').style.display = 'none';
         }
 
-        // Функция для перезапуска теста
         function restartQuiz() {
-            currentStep = 0;
-            totalScore = 0;
+            currentStep = 0; totalScore = 0;
             document.getElementById('result').style.display = 'none';
             document.getElementById('quiz-ui').style.display = 'block';
             document.getElementById('revBtn').style.display = 'block';
@@ -175,10 +143,7 @@
             startQuiz();
         }
 
-        let currentStep = 0;
-        let totalScore = 0;
-        let finalEmoji = "";
-        let finalTitle = "";
+        let currentStep = 0, totalScore = 0, finalEmoji = "", finalTitle = "";
 
         const questions = [
             { q: "Как ты заходишь в чат Gadionovka 666?", a: ["С ноги и мемом", "Тихо читаю", "Сразу кружочек"] },
@@ -214,8 +179,7 @@
                 const res = diagnoses[idx];
                 document.getElementById('diag-title').innerText = res.t;
                 document.getElementById('diag-desc').innerText = res.d;
-                finalEmoji = res.e;
-                finalTitle = res.t;
+                finalEmoji = res.e; finalTitle = res.t;
                 return;
             }
             const q = questions[currentStep];
@@ -227,16 +191,19 @@
                 const b = document.createElement('button');
                 b.className = 'opt-btn';
                 b.innerText = ans;
-                b.onclick = () => { totalScore += i; currentStep++; startQuiz(); };
+                b.onclick = () => { clickSound.play(); totalScore += i; currentStep++; startQuiz(); };
                 oCont.appendChild(b);
             });
         }
 
         function showPortrait() {
-            document.getElementById('revBtn').style.display = 'none';
-            const port = document.getElementById('emoji-portrait');
-            port.innerText = finalEmoji;
-            port.style.display = 'block';
+            drumSound.play();
+            setTimeout(() => {
+                document.getElementById('revBtn').style.display = 'none';
+                const port = document.getElementById('emoji-portrait');
+                port.innerText = finalEmoji;
+                port.style.display = 'block';
+            }, 1500);
         }
 
         function copyResult() {
